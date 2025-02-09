@@ -8,7 +8,7 @@ class Pilote:
         self.position = position  # Position dans la course
         self.numero = numero  # Numéro du pilote
         self.nom = nom  # Nom du pilote
-        self.tour = tour  # Nombre de tours effectués
+        self.tour = tour  # Nombre de tours courant
         self.chronos = Chrono()
 
     def __str__(self):
