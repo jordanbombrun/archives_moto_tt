@@ -1,6 +1,5 @@
 import os
 from bs4 import BeautifulSoup
-from chrono import Chrono
 from pilote import Pilote 
 
 #############
@@ -21,16 +20,26 @@ def extract_datas(pilotes):
             pilotes.append(Pilote(td_values[0], td_values[1], td_values[2], td_values[3]))
             for j, chrono_CP in enumerate(td_values):
                 if (j > 3):
-                    pilotes[i-1].chronos.ajouter_temps(chrono_CP)
+                    pilotes[i-1].ajouter_chrono(chrono_CP)
         i += 1
 
+# Donne le classement d'un pilote pour un CP donné
+def current_rank(current_CP_P, pilote_P):
+    current_position_L = 1
+    current_chrono_L = pilote_P.chronos[current_CP_P-1]
+    for k, pilote_L in enumerate(pilotes):
+        if pilote_L != pilote_P and current_chrono_L > pilote_L.chronos[current_CP_P-1]:
+            current_position_L +=1
+    return current_position_L
 
+    
 #############
 # Main code
 pilotes = []
 extract_datas(pilotes)
 
+# classement pilote 2 au CP2 - ne marche pas ?
+print("Position du pilote " + pilotes[2].nom + " au CP 2 : " + str(current_rank(2, pilotes[2])) + " à l'heure : " + pilotes[2].chronos[1])
 
-# classement au CP1
-print(pilotes[2])
+# print(pilotes[2])
 # print(pilote1)

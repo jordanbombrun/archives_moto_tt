@@ -9,7 +9,10 @@ class Pilote:
         self.numero = numero  # Numéro du pilote
         self.nom = nom  # Nom du pilote
         self.tour = tour  # Nombre de tours courant
-        self.chronos = Chrono()
+        self.chronos = [] # liste des temps de passage
+
+    def ajouter_chrono(self, *temps):
+        self.chronos.extend(temps)  # Ajoute tous les temps donnés à la liste
 
     def __str__(self):
         tempChronos = ""
