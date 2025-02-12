@@ -1,8 +1,5 @@
 # pilote.py
 
-from chrono import Chrono
-
-
 class Pilote:
     def __init__(self, position, numero, nom, tour):
         self.position = position  # Position dans la course

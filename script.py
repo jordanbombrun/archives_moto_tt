@@ -1,6 +1,8 @@
 import os
+from datetime import date
 from bs4 import BeautifulSoup
 from pilote import Pilote 
+from course import Course
 
 #############
 # Functions
@@ -24,7 +26,7 @@ def extract_datas(pilotes):
         i += 1
 
 # Donne le classement d'un pilote pour un CP donné
-def current_rank(current_CP_P, pilote_P):
+def get_current_rank(current_CP_P, pilote_P):
     current_position_L = 1
     current_chrono_L = pilote_P.chronos[current_CP_P-1]
     for k, pilote_L in enumerate(pilotes):
@@ -36,10 +38,14 @@ def current_rank(current_CP_P, pilote_P):
 #############
 # Main code
 pilotes = []
+course = Course("Alestrem", date(2025, 1, 26))
 extract_datas(pilotes)
+course.ajouter_pilotes(pilotes)
+course.nb_CP = len(pilotes[0].chronos)
+
 
 # classement pilote 2 au CP2 - ne marche pas ?
-print("Position du pilote " + pilotes[2].nom + " au CP 2 : " + str(current_rank(2, pilotes[2])) + " à l'heure : " + pilotes[2].chronos[1])
+# print("Position du pilote " + pilotes[2].nom + " au CP 2 : " + str(get_current_rank(2, pilotes[2])) + " à l'heure : " + pilotes[2].chronos[1])
 
-# print(pilotes[2])
-# print(pilote1)
+print("nombre de pilotes : " + str(len(course.pilotes)))
+print("nombre de CP : " + str(course.nb_CP))
