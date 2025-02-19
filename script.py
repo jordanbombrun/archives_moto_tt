@@ -44,17 +44,25 @@ course = Course("Alestrem", date(2025, 1, 26))
 extract_datas("pilote1.html")
 course.nb_CP = len(course.pilotes[0].chronos)
 
+for current_CP in range(course.nb_CP):
+    course.pilotes[2].positions.append(get_current_rank(current_CP, course.pilotes[2]))
+
+print("### positions Young :")
+for current_CP in range(course.nb_CP):
+    print("CP " + str(current_CP+1) + " / pos " + str(course.pilotes[2].positions[current_CP]))
+
+
 # pilote[2] : for each CP get_current_position > positions[]
-print("Young :")
-for current_CP in range(course.nb_CP):
-    print("CP " + str(current_CP+1) + " : " + str(get_current_rank(current_CP, course.pilotes[2])))
+# print("Young :")
+# for current_CP in range(course.nb_CP):
+#     print("CP " + str(current_CP+1) + " : " + str(get_current_rank(current_CP, course.pilotes[2])))
 
-print("Roman :")
-for current_CP in range(course.nb_CP):
-    print("CP " + str(current_CP+1) + " : " + str(get_current_rank(current_CP, course.pilotes[1])))
+# print("Roman :")
+# for current_CP in range(course.nb_CP):
+#     print("CP " + str(current_CP+1) + " : " + str(get_current_rank(current_CP, course.pilotes[1])))
 
-print("Kabach :")
-for current_CP in range(course.nb_CP):
-    print("CP " + str(current_CP+1) + " : " + str(get_current_rank(current_CP, course.pilotes[0])))
+# print("Kabach :")
+# for current_CP in range(course.nb_CP):
+#     print("CP " + str(current_CP+1) + " : " + str(get_current_rank(current_CP, course.pilotes[0])))
 
 # print("Position du pilote " + course.pilotes[2].nom + " au CP 2 : " + str(get_current_rank(2, course.pilotes[2])) + " à l'heure : " + str(course.pilotes[2].chronos[1]))

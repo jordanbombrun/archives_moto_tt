@@ -10,13 +10,18 @@ class Pilote:
         self.nom = nom  # Nom du pilote
         self.tour = tour  # Nombre de tours courant
         self.chronos = [] # liste des temps de passage
+        self.positions = [] # liste des positions pour chaque CP
 
-    def ajouter_chrono(self, *temps):
-        for t in temps:
+    def ajouter_chrono(self, *chrono_P):
+        for t in chrono_P:
             chrono = self.convertir_en_time(t)
             if chrono:  # Ajoute uniquement si la conversion a réussi
                 self.chronos.append(chrono)
     
+    def ajouter_position(self, *position_P):
+        for pos in position_P:
+            self.positions.append(pos)
+
     def convertir_en_time(self, horaire):
         try:
             if ":" not in horaire:
