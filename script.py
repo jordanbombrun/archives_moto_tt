@@ -21,32 +21,36 @@ def extract_datas(filename):
             table_header = Pilote(td_values[0], td_values[1], td_values[2], td_values[3])
         else :
             if (i == 1): # init le nombre de tours de la course
-                course.nb_tours = td_values[3]
+                course.nb_tours = int(td_values[3])
                 current_line_number = td_values[1]
             elif (td_values[1] != ''):
                 current_line_number = td_values[1]
             if (old_pilote is None or current_line_number != old_pilote.numero): # nouveau pilote
                 current_pilote = Pilote(td_values[0], td_values[1], td_values[2], td_values[3])
-                current_pilote.chronos = [[] for _ in range(int(course.nb_tours))]
-                current_pilote.positions = [[] for _ in range(int(course.nb_tours))]
+                current_pilote.chronos_tour_CP = [[] for _ in range(int(course.nb_tours))]
+                current_pilote.positions_tour_CP = [[] for _ in range(int(course.nb_tours))]
                 course.pilotes.append(current_pilote)
             else : # même pilote, mais tour différent
                 current_pilote.tour_courant = td_values[3]
             for j, chrono_CP in enumerate(td_values):
                 if (j > 3):
-                    current_pilote.ajouter_chrono(chrono_CP)
+                    current_pilote.ajouter_chrono(chrono_CP)              
             old_pilote = current_pilote
         i += 1
+    # init le nombre de CP par tour
+    course.nb_CP = len(course.pilotes[0].chronos_tour_CP[0])  
 
-# Donne le classement d'un pilote pour un CP donné
-def get_current_rank(current_CP_P, pilote_P):
+
+# Donne le classement d'un pilote pour un tour et un CP donné
+# ex : get_current_rank(1, 1, ...) : tour 1 et CP 1  
+def get_current_rank(current_tour_P, current_CP_P, pilote_P):
     current_position_L = 1
-    current_chrono_L = pilote_P.chronos[current_CP_P]
+    current_chrono_L = pilote_P.chronos_tour_CP[current_tour_P-1][current_CP_P-1]
     for k, pilote_L in enumerate(course.pilotes):
         if current_chrono_L == time(0, 0):
             current_position_L = 0
             break
-        chrono_to_compare = pilote_L.chronos[current_CP_P]
+        chrono_to_compare = pilote_L.chronos_tour_CP[current_tour_P-1][current_CP_P-1]
         if pilote_L != pilote_P and chrono_to_compare != time(0,0) and current_chrono_L > chrono_to_compare:
             current_position_L +=1
     return current_position_L
@@ -56,28 +60,13 @@ def get_current_rank(current_CP_P, pilote_P):
 # Main code
 course = Course("Alestrem", date(2025, 1, 26))
 extract_datas("pilote_3tours.html")
-course.nb_CP = len(course.pilotes[0].chronos)
 
-# for current_CP in range(course.nb_CP):
-#     course.pilotes[2].positions.append(get_current_rank(current_CP, course.pilotes[2]))
+# ajout de tous les chronos de tous les tours pour Roman
+for tour_L in range(course.nb_tours):    
+    for cp_L in range(course.nb_CP) :
+        course.pilotes[1].positions_tour_CP[tour_L].append(get_current_rank(tour_L+1, cp_L+1, course.pilotes[1]))
 
-# positions
-# print("### positions Young :")
-# for current_CP in range(course.nb_CP):
-#     print("CP " + str(current_CP+1) + " / pos " + str(course.pilotes[2].positions[current_CP]))
+print("")
 
 
-# pilote[2] : for each CP get_current_position > positions[]
-# print("Young :")
-# for current_CP in range(course.nb_CP):
-#     print("CP " + str(current_CP+1) + " : " + str(get_current_rank(current_CP, course.pilotes[2])))
 
-# print("Roman :")
-# for current_CP in range(course.nb_CP):
-#     print("CP " + str(current_CP+1) + " : " + str(get_current_rank(current_CP, course.pilotes[1])))
-
-# print("Kabach :")
-# for current_CP in range(course.nb_CP):
-#     print("CP " + str(current_CP+1) + " : " + str(get_current_rank(current_CP, course.pilotes[0])))
-
-# print("Position du pilote " + course.pilotes[2].nom + " au CP 2 : " + str(get_current_rank(2, course.pilotes[2])) + " à l'heure : " + str(course.pilotes[2].chronos[1]))

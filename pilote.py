@@ -8,19 +8,19 @@ class Pilote:
         self.position = position  # Position dans la course
         self.numero = numero  # Numéro du pilote
         self.nom = nom  # Nom du pilote
-        self.tour_courant = tour_courant  # Nombre du tour en cours
-        self.chronos = [] # liste des temps de passage, par tour
-        self.positions = [] # liste des positions pour chaque CP, par tour
+        self.tour_courant = tour_courant  # Numéro du tour en cours
+        self.chronos_tour_CP = [] # liste des temps de passage, par tour
+        self.positions_tour_CP = [] # liste des positions pour chaque CP, par tour
 
     def ajouter_chrono(self, *chrono_P):
         for t in chrono_P:
             chrono = self.convertir_en_time(t)
             if chrono:  # Ajoute uniquement si la conversion a réussi
-                self.chronos[int(self.tour_courant)-1].append(chrono)
+                self.chronos_tour_CP[int(self.tour_courant)-1].append(chrono)
     
     def ajouter_position(self, *position_P):
         for pos in position_P:
-            self.positions[int(self.tour_courant)-1].append(pos)
+            self.positions_tour_CP[int(self.tour_courant)-1].append(pos)
 
     def convertir_en_time(self, horaire):
         try:
