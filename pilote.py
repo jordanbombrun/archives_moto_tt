@@ -4,25 +4,25 @@ from datetime import time
 
 
 class Pilote:
-    def __init__(self, position, numero, nom, tour_courant):
+    def __init__(self, position, number, name, current_tour):
         self.position = position  # Position dans la course
-        self.numero = numero  # Numéro du pilote
-        self.nom = nom  # Nom du pilote
-        self.tour_courant = tour_courant  # Numéro du tour en cours
+        self.number = number  # Numéro du pilote
+        self.name = name  # Nom du pilote
+        self.current_tour = current_tour  # Numéro du tour en cours
         self.chronos_tour_CP = [] # liste des temps de passage, par tour
         self.positions_tour_CP = [] # liste des positions pour chaque CP, par tour
 
-    def ajouter_chrono(self, *chrono_P):
+    def add_chrono(self, *chrono_P):
         for t in chrono_P:
-            chrono = self.convertir_en_time(t)
+            chrono = self.convert_time(t)
             if chrono:  # Ajoute uniquement si la conversion a réussi
-                self.chronos_tour_CP[int(self.tour_courant)-1].append(chrono)
+                self.chronos_tour_CP[int(self.current_tour)-1].append(chrono)
     
-    def ajouter_position(self, *position_P):
+    def add_position(self, *position_P):
         for pos in position_P:
             self.positions_tour_CP[int(self.tour_courant)-1].append(pos)
 
-    def convertir_en_time(self, horaire):
+    def convert_time(self, horaire):
         try:
             if ":" not in horaire:
                 raise ValueError(f"Format invalide: {horaire}")
@@ -45,7 +45,7 @@ class Pilote:
     #         tempChronos += chr + " / "
     #     return (
     #         f"Position : {self.position}\n"
-    #         f"Numéro : {self.numero}\n"
+    #         f"Numéro : {self.number}\n"
     #         f"Nom pilote : {self.nom}\n"
     #         f"Tour: {self.tour}\n"
     #         f"Chronos: {tempChronos}\n"
