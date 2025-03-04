@@ -2,58 +2,68 @@ import os
 import sys
 from datetime import date, time
 from bs4 import BeautifulSoup
+import requests
 from pilote import Pilote 
 from race import Race
 
+SOURCE = {
+    "url": "http://www.motott.fr/live/HARD_GENTOR_2025/MANCHE1_PASSAGES_CH.html",
+    "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+}
+
 #############
 # Functions
-# extrait toutes les données pilotes et chronos depuis le tableau HTML
-def extract_datas(filename):
-    with open(filename, "r", encoding="utf-8") as file:
-        html_content = file.read()
-    soup = BeautifulSoup(html_content, "html.parser")
-    all_rows = soup.find_all("tr")
-    i = 0
-    old_pilote = None 
-    current_pilote = None
-    for row in all_rows:
-        td_values = [td.text.strip() for td in row.find_all("td")]
-        if (i == 0): 
-            table_header = Pilote(td_values[0], td_values[1], td_values[2], td_values[3])
-        else :
-            if (i == 1): # init le nombre de tours de la course
-                race.nb_tours = int(td_values[3])
-                current_line_number = td_values[1]
-            elif (td_values[1] != ''):
-                current_line_number = td_values[1]
-            if (old_pilote is None or current_line_number != old_pilote.number): # nouveau pilote
-                current_pilote = Pilote(td_values[0], td_values[1], td_values[2], td_values[3])
-                current_pilote.chronos_tour_CP = [[] for _ in range(int(race.nb_tours))]
-                current_pilote.positions_tour_CP = [[] for _ in range(int(race.nb_tours))]
-                race.pilotes.append(current_pilote)
-            else : # même pilote, mais tour différent
-                current_pilote.current_tour = td_values[3]
-            for j, chrono_CP in enumerate(td_values):
-                if (j > 3):
-                    current_pilote.add_chrono(chrono_CP)              
-            old_pilote = current_pilote
-        i += 1
-    # init le nombre de CP par tour
-    race.nb_CP = len(race.pilotes[0].chronos_tour_CP[0])  
-
+# extrait toutes les données pilotes et chronos depuis la source web
+def extract_datas():
+    response = requests.get(SOURCE["url"], headers=SOURCE["headers"])
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+        rows = soup.find_all("tr")
+        i = 0
+        old_pilote = None 
+        current_pilote = None
+        init_nb_tour = False
+        for row in rows:
+            td_values = [td.text.strip() for td in row.find_all("td", recursive=False)]
+            if (i == 3): # ligne des entêtes
+                race.nb_CP = len(td_values) - 4 
+            elif (i > 3): # filtre les 1ères lignes 
+                if not init_nb_tour:
+                    race.nb_tours = int(td_values[3])
+                    init_nb_tour = True
+                if (td_values[1] != ''):
+                    current_line_number = td_values[1]
+                if (old_pilote is None or current_line_number != old_pilote.number): # nouveau pilote
+                    current_pilote = Pilote(td_values[0], td_values[1], td_values[2], td_values[3])
+                    current_pilote.chronos_tour_CP = [[] for _ in range(int(race.nb_tours))]
+                    current_pilote.positions_tour_CP = [[] for _ in range(int(race.nb_tours))]
+                    race.pilotes.append(current_pilote)
+                else : # même pilote, mais tour différent
+                    current_pilote.current_tour = td_values[3]
+                for j, chrono_CP in enumerate(td_values):
+                    if (j > 3):
+                        current_pilote.add_chrono(chrono_CP)              
+                old_pilote = current_pilote
+            i += 1
+    else:
+        print(f"Erreur avec la source de donnée, erreur : {response.status_code}")
 
 # Donne le classement d'un pilote pour un tour et un CP donné
 # ex : get_current_rank(1, 1, ...) : tour 1 et CP 1  
 def get_current_rank(current_tour_P, current_CP_P, pilote_P):
     current_position_L = 1
+    if (len(pilote_P.chronos_tour_CP[current_tour_P-1]) == 0):
+        return 0
     current_chrono_L = pilote_P.chronos_tour_CP[current_tour_P-1][current_CP_P-1]
-    for k, pilote_L in enumerate(race.pilotes):
-        if current_chrono_L == time(0, 0):
-            current_position_L = 0
-            break
-        chrono_to_compare = pilote_L.chronos_tour_CP[current_tour_P-1][current_CP_P-1]
-        if pilote_L != pilote_P and chrono_to_compare != time(0,0) and current_chrono_L > chrono_to_compare:
-            current_position_L +=1
+    if current_chrono_L == time(0, 0): # cas d'un CP non tracké/vide
+        return 0
+    for k, pilote_to_compare in enumerate(race.pilotes):
+        if (len(pilote_to_compare.chronos_tour_CP[current_tour_P-1]) > 0):
+            chrono_to_compare = pilote_to_compare.chronos_tour_CP[current_tour_P-1][current_CP_P-1]
+            if pilote_to_compare != pilote_P and chrono_to_compare != time(0,0) and current_chrono_L > chrono_to_compare:
+                current_position_L +=1
     return current_position_L
 
     
@@ -61,13 +71,14 @@ def get_current_rank(current_tour_P, current_CP_P, pilote_P):
 # Main code
 
 # Vérifier qu'un argument a été passé
-if len(sys.argv) > 1:
-    number_arg = sys.argv[1]  # Premier argument après le nom du script
-else:
-    print("Aucun argument fourni.")
+# if len(sys.argv) > 1:
+#     number_arg = sys.argv[1]  # Premier argument après le nom du script
+# else:
+#     print("Aucun argument fourni.")
+number_arg = '444'
 
 race = Race("Alestrem", date(2025, 1, 26))
-extract_datas("pilote_3tours.html")
+extract_datas()
 pilote_arg = race.get_pilote_by_number(number_arg)
 if (pilote_arg is not None):
     # ajout de tous les chronos de tous les tours pour 1 pilote
