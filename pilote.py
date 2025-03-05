@@ -5,7 +5,7 @@ from datetime import time
 
 class Pilote:
     def __init__(self, position, number, name, current_tour):
-        self.position = position  # Position dans la course
+        self.final_position = position  # Position finale
         self.number = number  # Numéro du pilote
         self.name = name  # Nom du pilote
         self.current_tour = current_tour  # Numéro du tour en cours
@@ -38,6 +38,18 @@ class Pilote:
         except ValueError as e:
             # print(f"Erreur : {e}")  # Affichage de l'erreur
             return time(0, 0)  # Retourne 0:0 en cas d'erreur
+
+    def print_positions(self):
+        for index_tour, tour in enumerate(self.positions_tour_CP):
+            print(f'Tour {index_tour + 1} :')
+            if not tour:
+                print('  Aucun CP')
+            else:
+                for index_cp, cp in enumerate(tour):
+                    print(f'  CP {index_cp + 1} : {cp}')
+            print('-' * 20)
+        print(f'Position finale : {self.final_position}')
+
 
     # def __str__(self):
     #     tempChronos = ""

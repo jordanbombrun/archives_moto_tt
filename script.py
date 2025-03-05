@@ -6,20 +6,18 @@ import requests
 from pilote import Pilote 
 from race import Race
 
-SOURCE = {
-    "url": "http://www.motott.fr/live/HARD_GENTOR_2025/MANCHE1_PASSAGES_CH.html",
-    "headers": {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    }
-}
+#############
+# CONST
+#############
+HEADERS_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 
 #############
 # Functions
-# extrait toutes les données pilotes et chronos depuis la source web
-def extract_datas():
-    response = requests.get(SOURCE["url"], headers=SOURCE["headers"])
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, "html.parser")
+#############
+# Traite toutes les données pilotes et chronos pour alimenter les chronos des pilotes
+def parse_datas(url_p, race):
+    soup = get_datas_from_source(url_p)
+    if (soup is not None):
         rows = soup.find_all("tr")
         i = 0
         old_pilote = None 
@@ -48,9 +46,24 @@ def extract_datas():
                 old_pilote = current_pilote
             i += 1
     else:
-        print(f"Erreur avec la source de donnée, erreur : {response.status_code}")
+        return None
 
-# Donne le classement d'un pilote pour un tour et un CP donné
+# Récupére le contenu sur le web ou dans un fichier local
+# renvoie un objet BeautifulSoup si OK , un string vide si KO
+def get_datas_from_source(url_p):
+    if (url_p.startswith('http')):
+        response = requests.get(url_p, headers=HEADERS_USER_AGENT)
+        if response.status_code == 200:
+            return BeautifulSoup(response.text, "html.parser")
+    else:
+        html_content = ''
+        with open(url_p, "r", encoding="utf-8") as file:
+            html_content = file.read()
+            if html_content != '':
+                return BeautifulSoup(html_content, "html.parser")
+    return None
+
+# Donne le classement d'un pilote pour un tour et un CP donnés
 # ex : get_current_rank(1, 1, ...) : tour 1 et CP 1  
 def get_current_rank(current_tour_P, current_CP_P, pilote_P):
     current_position_L = 1
@@ -69,22 +82,24 @@ def get_current_rank(current_tour_P, current_CP_P, pilote_P):
     
 #############
 # Main code
+#############
 
-# Vérifier qu'un argument a été passé
-# if len(sys.argv) > 1:
-#     number_arg = sys.argv[1]  # Premier argument après le nom du script
-# else:
-#     print("Aucun argument fourni.")
-number_arg = '444'
+# Vérifier les arguments
+if len(sys.argv) > 2:
+    url = sys.argv[1]  
+    number_arg = sys.argv[2]  
+else:
+    print("Il manque un ou des argument(s).")
 
-race = Race("Alestrem", date(2025, 1, 26))
-extract_datas()
+race = Race('MyRace', date(2025, 1, 26))
+parse_datas(url, race)
 pilote_arg = race.get_pilote_by_number(number_arg)
 if (pilote_arg is not None):
     # ajout de tous les chronos de tous les tours pour 1 pilote
     for tour_L in range(race.nb_tours):    
         for cp_L in range(race.nb_CP) :
             pilote_arg.positions_tour_CP[tour_L].append(get_current_rank(tour_L+1, cp_L+1, pilote_arg))
+    pilote_arg.print_positions()
 else:
     print("Aucun pilote trouvé pour le numéro " + number_arg)
 
