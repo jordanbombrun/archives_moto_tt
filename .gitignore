@@ -1,0 +1,5 @@
+PythonVirtualEnv/
+results/
+*.md
+.vscode/
+__pycache__/
