@@ -1,9 +1,9 @@
-# pilote.py
+# rider.py
 
 from datetime import time
 
 
-class Pilote:
+class Rider:
     def __init__(self, position, number, name, current_tour):
         self.final_position = position  # Position finale
         self.number = number  # Numéro du pilote
@@ -50,15 +50,3 @@ class Pilote:
             print('-' * 20)
         print(f'Position finale : {self.final_position}')
 
-
-    # def __str__(self):
-    #     tempChronos = ""
-    #     for chr in self.chronos.temps_passage:
-    #         tempChronos += chr + " / "
-    #     return (
-    #         f"Position : {self.position}\n"
-    #         f"Numéro : {self.number}\n"
-    #         f"Nom pilote : {self.nom}\n"
-    #         f"Tour: {self.tour}\n"
-    #         f"Chronos: {tempChronos}\n"
-    #     )
