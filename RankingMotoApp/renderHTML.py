@@ -15,5 +15,5 @@ def input():
 def render_rider_datas():
     rider_n = request.form['rider_number']
     ranking_url = request.form['ranking_url']    
-    result = script.process(rider_n, ranking_url)
-    return f"La position finale du pilote est : {result}" 
+    rider = script.process(rider_n, ranking_url)
+    return render_template('rider_info.html', rider=rider) 

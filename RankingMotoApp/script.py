@@ -116,7 +116,7 @@ def process(rider_number_P, url_P):
             print("Aucun pilote trouvé pour le numéro " + rider_number_P)
     else:
         print('Argument du script non valide : ' + rider_number_P + ' doit être > 0')
-    return rider_P.final_position
+    return rider_P
     
     
 
