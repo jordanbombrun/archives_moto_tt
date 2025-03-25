@@ -100,11 +100,11 @@ def get_current_rank(current_tour_P, current_CP_P, rider_P):
 # else:
 #     print("Il manque un ou des argument(s).")
 
-def process(rider_number_P):
-    url = os.path.join(os.path.dirname(__file__), 'templates', 'ALESTREM2025.html')
+def process(rider_number_P, url_P):
+    # url = os.path.join(os.path.dirname(__file__), 'templates', 'ALESTREM2025.html')
     # avec 1 arguments : numéro du pilote
     if (int(rider_number_P) > 0):
-        parse_datas(url, race)
+        parse_datas(url_P, race)
         rider_P = race.get_rider_by_number(rider_number_P)
         if (rider_P is not None):
             # ajout de tous les chronos de tous les tours pour 1 pilote

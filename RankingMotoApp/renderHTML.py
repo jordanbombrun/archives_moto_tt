@@ -14,5 +14,6 @@ def input():
 @app.route('/render_rider_datas', methods=['POST'])
 def render_rider_datas():
     rider_n = request.form['rider_number']
-    result = script.process(rider_n)
+    ranking_url = request.form['ranking_url']    
+    result = script.process(rider_n, ranking_url)
     return f"La position finale du pilote est : {result}" 
