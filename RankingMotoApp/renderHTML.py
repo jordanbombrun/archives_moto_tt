@@ -16,4 +16,5 @@ def render_rider_datas():
     rider_n = request.form['rider_number']
     ranking_url = request.form['ranking_url']    
     rider = script.process(rider_n, ranking_url)
-    return render_template('rider_info.html', rider=rider) 
+    rider_positions = rider.format_positions_html()
+    return render_template('rider_info.html', rider=rider, rider_positions=rider_positions) 

@@ -5,3 +5,9 @@
     <li>Numéro : {{ rider.number }}</li>
     <li>Position finale : {{ rider.final_position }}</li>
 </ul>
+
+<h2>Positions du pilote : </h2>
+
+{% for rpos in rider_positions %}
+    <p>Tour : {{ rpos['tour'] }} , CP : {{ rpos['cp'] }}, Position : {{ rpos['pos'] }}</p>
+{% endfor %}
