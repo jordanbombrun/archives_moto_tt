@@ -3,8 +3,8 @@ import sys
 from datetime import date, time
 from bs4 import BeautifulSoup
 import requests
-from rider import Rider 
-from race import Race
+from RankingMotoApp.models.rider import Rider 
+from RankingMotoApp.models.race import Race
 
 #############
 # CONST
@@ -90,19 +90,7 @@ def get_current_rank(current_lap_P, current_CP_P, rider_P):
 #############
 # Main code
 #############
-
-# Vérifier les arguments
-
-# avec 2 arguments : url et numéro du pilote
-# if len(sys.argv) > 2:
-#     url = sys.argv[1]  
-#     number_arg = sys.argv[2]  
-# else:
-#     print("Il manque un ou des argument(s).")
-
 def process(rider_number_P, url_P):
-    # url = os.path.join(os.path.dirname(__file__), 'templates', 'ALESTREM2025.html')
-    # avec 1 arguments : numéro du pilote
     if (int(rider_number_P) > 0):
         parse_datas(url_P, race)
         rider_P = race.get_rider_by_number(rider_number_P)
