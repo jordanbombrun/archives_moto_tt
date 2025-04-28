@@ -1,5 +1,3 @@
-# course.py
-
 from datetime import date
 
 class Race:
@@ -19,3 +17,15 @@ class Race:
             if (p.number == number_P):
                 return p
         return None
+
+    # CRUD Race
+    def save(self):
+        # todo : save in DB
+        pass
+
+    def get_race(self):
+        return 'classement de la course ' + self.name + ' ' + str(self.date.year)
+
+    @staticmethod
+    def get_race_by_id(self, id):
+        pass

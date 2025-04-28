@@ -1,11 +1,17 @@
-<form action="render_rider_datas" method="post">
+<h2>Ajouter une course</h2>
+<form action="course_details" method="post">
+    <div>
+        <label for="race_url">Entrez le lien vers le résultat de la course :</label>
+        <input type="text" name="race_url" required>
+    </div>
+    <input type="submit" value="OK">
+</form>
+
+<h2>Rechercher un pilote pour la course ...</h2>
+<form action="search_rider_by_number" method="post">
     <div>
         <label for="rider_number">Entrez le numéro du pilote : </label>
-        <input type="text" name="rider_number" id="1">
-    </div>
-    <div>
-        <label for="ranking_url">Entrez le lien vers le classement de la course : </label>
-        <input type="text" name="ranking_url" id="2">
+        <input type="text" name="rider_number">
     </div>
     <input type="submit" value="OK">
 </form>
