@@ -1,5 +1,6 @@
 PythonVirtualEnv/
 results/
 *.md
-.vscode/
 __pycache__/
+
+!ReadMe.md
