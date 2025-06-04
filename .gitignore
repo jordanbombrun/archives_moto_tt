@@ -2,5 +2,5 @@ PythonVirtualEnv/
 results/
 *.md
 __pycache__/
-
+*.db
 !ReadMe.md
