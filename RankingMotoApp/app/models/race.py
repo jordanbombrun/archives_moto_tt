@@ -1,13 +1,13 @@
 from datetime import date
-import enum
+from enum import Enum
 
-class Format(enum.Enum):
-    ENDURO = "enduro"
-    ENDURO_CLASSIQUE = "enduro classique"
-    ENDURO_SPRINT = "enduro sprint"
-    ENDURO_EXTRÊME = "enduro extrême"
-    CROSS_COUNTRY = "cross country"
-    CROSS = "cross"
+# Format name in the app, it has to match the DB tables names
+class Format(Enum):
+    CASSIC_ENDURO_RACE = "enduro classique"
+    ENDURO_SPRINT_RACE = "enduro sprint"
+    EXTREME_ENDURO_RACE = "enduro extrême"
+    CROSS_COUNTRY_RACE = "cross country"
+    MOTOCROSS_RACE = "motocross"
     INCONNU = "inconnu"
 
 class Serie:
@@ -27,9 +27,9 @@ class Race:
         self.serie = serie if isinstance(serie, Serie) else None
         self.location = location
         self.riders = []
-        self.nb_CP = nb_CP
-        self.nb_SP = nb_SP
-        self.nb_laps = nb_laps
+        self.nb_cp = nb_CP
+        self.nb_sp = nb_SP
+        self.nb_lap = nb_laps
 
     def add_riders(self, riders_P):
         self.riders.extend(riders_P)  # Ajoute tous les pilotes à la liste

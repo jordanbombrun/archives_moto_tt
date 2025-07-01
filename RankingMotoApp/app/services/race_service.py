@@ -4,7 +4,7 @@ import re
 from bs4 import BeautifulSoup
 from flask import render_template
 import requests
-from RankingMotoApp.app.dao.race_dao import save_race
+from RankingMotoApp.app.dao.race_dao import create_race
 from RankingMotoApp.app.models.race import Format, Race, Serie
 from RankingMotoApp.app.models.rider import Rider
 
@@ -18,11 +18,11 @@ class RaceService:
     # Retourne True si traitement OK, False sinon
     def add_race(self):
         # instanciation course
-        new_serie = Serie('Extrême challenge', 2025)
-        new_race = Race('ALESTREM', date(2025, 1, 26), Format.ENDURO_EXTRÊME, 'Alès', new_serie, 10, 0, 3)
+        serie = Serie('Extrême challenge', 2025)
+        new_race = Race('ALESTREM', date(2025, 1, 26), Format.EXTREME_ENDURO_RACE, 'Alès', serie, 10, 0, 3)
 
         # persistance course
-        save_race(new_race)
+        create_race(new_race)
         return True
             
         #     soup = self.get_datas_from_source(os.path.join(os.path.dirname(__file__), "..", "templates", "page_utf8_short.html"))
@@ -91,17 +91,17 @@ class RaceService:
                 for row in rows:
                     td_values = [td.text.strip() for td in row.find_all("td", recursive=False)]
                     if (i == 3): # ligne des entêtes
-                        new_race.nb_CP = len(td_values) - 4 
+                        new_race.nb_cp = len(td_values) - 4 
                     elif (i > 3): # filtre les 1ères lignes 
                         if not init_nb_lap:
-                            new_race.nb_laps = int(td_values[3])
+                            new_race.nb_lap = int(td_values[3])
                             init_nb_lap = True
                         if (td_values[1] != ''):
                             current_line_number = td_values[1]
                         if (old_rider is None or current_line_number != old_rider.number): # nouveau pilote
                             current_rider = Rider(td_values[0], td_values[1], td_values[2], td_values[3])
-                            current_rider.chronos_lap_CP = [[] for _ in range(int(new_race.nb_laps))]
-                            current_rider.positions_lap_CP = [[] for _ in range(int(new_race.nb_laps))]
+                            current_rider.chronos_lap_CP = [[] for _ in range(int(new_race.nb_lap))]
+                            current_rider.positions_lap_CP = [[] for _ in range(int(new_race.nb_lap))]
                             new_race.riders.append(current_rider)
                         else : # même pilote, mais tour différent
                             current_rider.current_lap = td_values[3]
