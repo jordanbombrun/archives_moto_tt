@@ -4,8 +4,6 @@ VALUES ('black'), ('red'), ('green'), ('blue'), ('pink'), ('or'), ('argent'), ('
 INSERT INTO serie (name, year)
 VALUES ('Extrême challenge', 2025), ('Ligue Aura enduro', 2025), ('Championnat de France enduro', 2025), ('Championnat de France motocross', 2025), ('Championnat de France Cross Country', 2025); 
 
-INSERT INTO format (name)
-VALUES ('enduro'), ('enduro classique'), ('enduro sprint'), ('enduro extrême'), ('cross country'), ('cross'), ('inconnu');
 
 -- CREATE TABLE IF NOT EXISTS "race" (
 -- 	"id" INTEGER NOT NULL UNIQUE,

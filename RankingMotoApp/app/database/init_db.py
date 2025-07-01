@@ -12,14 +12,18 @@ try:
     # DDL
     with open(ddl_script_path, 'r') as f:
         connection.executescript(f.read())
+    print("#######################")
     print("DDL DB OK")
+
 
     # DML
     with open(dml_script_path, 'r') as f:
         connection.executescript(f.read())
+    print("#######################")
     print("DML DB OK")
 
 except Exception as e:
+    print("#######################")
     print("init DB KO") 
     print(f"Erreur : {e}")
 finally:

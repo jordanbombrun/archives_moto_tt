@@ -3,7 +3,6 @@ CREATE TABLE IF NOT EXISTS "race" (
 	"name" VARCHAR NOT NULL,
 	"date" DATE NOT NULL,
 	"location" VARCHAR,
-	"format_id" INTEGER,
 	"serie_id" INTEGER,
 	PRIMARY KEY("id"),
 	FOREIGN KEY ("serie_id") REFERENCES "serie"("id")
@@ -20,14 +19,6 @@ CREATE TABLE IF NOT EXISTS "category" (
 	"id" INTEGER NOT NULL UNIQUE,
 	"name" VARCHAR NOT NULL,
 	PRIMARY KEY("id")
-);
-
-CREATE TABLE IF NOT EXISTS "format" (
-	"id" INTEGER NOT NULL UNIQUE,
-	"name" VARCHAR NOT NULL,
-	PRIMARY KEY("id"),
-	FOREIGN KEY ("id") REFERENCES "race"("format_id")
-	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "chrono" (
@@ -122,7 +113,7 @@ CREATE TABLE IF NOT EXISTS "cross_country_race" (
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "motocross" (
+CREATE TABLE IF NOT EXISTS "motocross_race" (
 	"race_id" INTEGER NOT NULL UNIQUE,
 	"nb_race" INTEGER NOT NULL DEFAULT 1,
 	PRIMARY KEY("race_id"),
@@ -147,7 +138,7 @@ CREATE TABLE IF NOT EXISTS "serie" (
 	PRIMARY KEY("id")
 );
 
-CREATE TABLE IF NOT EXISTS "enduro_sprint" (
+CREATE TABLE IF NOT EXISTS "enduro_sprint_race" (
 	"race_id" INTEGER NOT NULL UNIQUE,
 	"nb_lap" INTEGER NOT NULL,
 	"nb_sp" INTEGER NOT NULL,
