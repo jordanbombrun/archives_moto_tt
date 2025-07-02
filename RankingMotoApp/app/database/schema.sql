@@ -4,8 +4,11 @@ CREATE TABLE IF NOT EXISTS "race" (
 	"date" DATE NOT NULL,
 	"location" VARCHAR,
 	"serie_id" INTEGER,
+	"format_id" INTEGER NOT NULL,
 	PRIMARY KEY("id"),
 	FOREIGN KEY ("serie_id") REFERENCES "serie"("id")
+	ON UPDATE NO ACTION ON DELETE NO ACTION,
+	FOREIGN KEY ("format_id") REFERENCES "format"("id")
 	ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
@@ -76,24 +79,6 @@ CREATE TABLE IF NOT EXISTS "team" (
 	PRIMARY KEY("id")
 );
 
-CREATE TABLE IF NOT EXISTS "extreme_enduro_race" (
-	"race_id" INTEGER NOT NULL,
-	"nb_lap" INTEGER NOT NULL,
-	"nb_cp" INTEGER NOT NULL,
-	PRIMARY KEY("race_id"),
-	FOREIGN KEY ("race_id") REFERENCES "race"("id")
-	ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS "classic_enduro_race" (
-	"race_id" INTEGER NOT NULL UNIQUE,
-	"nb_lap" INTEGER NOT NULL,
-	"nb_sp" INTEGER NOT NULL,
-	PRIMARY KEY("race_id"),
-	FOREIGN KEY ("race_id") REFERENCES "race"("id")
-	ON UPDATE CASCADE ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS "checkpoint" (
 	"id" INTEGER NOT NULL UNIQUE,
 	"particpation_id" INTEGER NOT NULL,
@@ -105,25 +90,13 @@ CREATE TABLE IF NOT EXISTS "checkpoint" (
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "cross_country_race" (
-	"race_id" INTEGER NOT NULL UNIQUE,
-	"nb_race" INTEGER,
-	PRIMARY KEY("race_id"),
-	FOREIGN KEY ("race_id") REFERENCES "race"("id")
-	ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS "motocross_race" (
-	"race_id" INTEGER NOT NULL UNIQUE,
-	"nb_race" INTEGER NOT NULL DEFAULT 1,
-	PRIMARY KEY("race_id"),
-	FOREIGN KEY ("race_id") REFERENCES "race"("id")
-	ON UPDATE CASCADE ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS "race_categories" (
 	"race_id" INTEGER NOT NULL UNIQUE,
 	"category_id" INTEGER NOT NULL,
+	"nb_lap" INTEGER,
+	"nb_cp" INTEGER,
+	"nb_sp" INTEGER,
+	"nb_round" INTEGER,
 	PRIMARY KEY("race_id", "category_id"),
 	FOREIGN KEY ("race_id") REFERENCES "race"("id")
 	ON UPDATE CASCADE ON DELETE CASCADE,
@@ -138,11 +111,8 @@ CREATE TABLE IF NOT EXISTS "serie" (
 	PRIMARY KEY("id")
 );
 
-CREATE TABLE IF NOT EXISTS "enduro_sprint_race" (
-	"race_id" INTEGER NOT NULL UNIQUE,
-	"nb_lap" INTEGER NOT NULL,
-	"nb_sp" INTEGER NOT NULL,
-	PRIMARY KEY("race_id"),
-	FOREIGN KEY ("race_id") REFERENCES "race"("id")
-	ON UPDATE CASCADE ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS "format" (
+	"id" INTEGER NOT NULL UNIQUE,
+	"name" VARCHAR NOT NULL,
+	PRIMARY KEY("id")
 );
