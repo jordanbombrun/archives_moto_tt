@@ -1,8 +1,37 @@
 <h2>Post race</h2>
 <form action="add_race" method="post">
+    <div>
+        <!-- <label for="serie">Série :</label>
+        <select name="serie" id="serie" required>
+            <option value="">--Choisir une série--</option>
+            {% for serie in series %}
+                <option value="{{ serie.id }}">{{ serie.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="format">Format :</label>
+            <select name="format" id="format" required>
+                <option value="">--Choisir un format--</option>
+                {% for format in formats %}
+                    <option value="{{ format }}">{{ format }}</option>
+                {% endfor %}
+            </select>
+    </div> -->
     <input type="submit" value="OK">
 </form>
 
+<form action="add_serie" method="post">
+    <div>
+        <label for="new_serie_name">Ajouter une nouvelle série :</label>
+        <input type="text" name="new_serie_name" id="new_serie_name" placeholder="Nom de la série">
+        <input type="number" name="new_serie_year" id="new_serie_year" placeholder="Année" min="1900" max="2100">
+        <input type="submit" value="OK">
+    </div>
+</form>
+
+
+<!-- 
 <h2>Ajouter une course</h2>
 <form action="course_details" method="post">
     <div>
@@ -19,4 +48,4 @@
         <input type="text" name="rider_number">
     </div>
     <input type="submit" value="OK">
-</form>
+</form> -->
