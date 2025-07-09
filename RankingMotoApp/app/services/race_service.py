@@ -19,7 +19,7 @@ class RaceService:
     def add_race(self):
         # instanciation course
         serie = Serie('Extrême challenge', 2025)
-        new_race = Race('ALESTREM', date(2025, 1, 26), Format.EXTREME_ENDURO_RACE, 'Alès', serie, 10, 0, 3)
+        new_race = Race('ALESTREM', date(2025, 1, 26), Format.EXTREME_ENDURO_RACE, 'Alès', serie, 10, 0, 3, 0)
 
         # persistance course
         create_race(new_race)
@@ -134,3 +134,16 @@ class RaceService:
                 if html_content != '':
                     return BeautifulSoup(html_content, "html.parser")
         return None
+
+
+# CREATE TABLE IF NOT EXISTS "race" (
+# 	"id" INTEGER NOT NULL UNIQUE,
+# 	"name" VARCHAR NOT NULL,
+# 	"date" DATE NOT NULL,
+# 	"location" VARCHAR,
+# 	"format_id" INTEGER,
+# 	"serie_id" INTEGER,
+# 	PRIMARY KEY("id"),
+# 	FOREIGN KEY ("serie_id") REFERENCES "serie"("id")
+# 	ON UPDATE NO ACTION ON DELETE NO ACTION
+# );
