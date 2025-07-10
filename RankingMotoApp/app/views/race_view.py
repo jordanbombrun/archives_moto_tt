@@ -1,8 +1,22 @@
-from flask import make_response, request
+from flask import make_response, render_template, request
 from RankingMotoApp.app.services.race_service import RaceService
 from RankingMotoApp.app.utils.DBReport import DBReport
 
 race_service = RaceService()
+
+def home_race():
+    result_get_series = race_service.get_all_series()
+    if result_get_series != DBReport.GET_NOT_FOUND:
+        series = result_get_series
+    else:
+        series = None
+    result_get_formats = race_service.get_all_formats()
+    if result_get_formats != DBReport.GET_NOT_FOUND:
+        formats = result_get_formats
+    else:
+        formats = None
+    return render_template('home.html', series=series, formats=formats)
+    
 
 def add_race():
     if (race_service.add_race()):

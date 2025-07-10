@@ -7,6 +7,7 @@ class Table(Enum):
     race = "course"
     serie = "serie"
     team = "team"
+    format = "format"
     category = "categorie"
     race_categories = "race_categories"
     rider = "pilote"

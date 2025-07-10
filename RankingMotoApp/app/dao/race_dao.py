@@ -33,17 +33,42 @@ def create_race(race_p: Race):
     return race_id
 
 # Format Race DAO
-def get_format_id(format_p :Format):    
+def get_all_formats():
+    formats = []
+    with DatabaseConnection.get_db_cursor() as cursor:
+        cursor.execute(f"SELECT * FROM {Table.format.name}")
+        formats_lines = cursor.fetchall()
+    for format_line in formats_lines:
+        format_temp = Format(format_line[0], format_line[1])
+        formats.append(format_temp)
+    if len(formats) > 0:
+        return formats
+    return DBReport.GET_NOT_FOUND
+
+def get_format_id(format_name :str):    
     format_id = None
-    if format_p:
+    if format_name:
         with DatabaseConnection.get_db_cursor() as cursor:
-            cursor.execute("SELECT id FROM format WHERE name = ?", (format_p.value,))
+            cursor.execute(f"SELECT id FROM {Table.format.name} WHERE name = ?", (format_name.value,))
             format_line = cursor.fetchone()
         if format_line:
             format_id = format_line[0]
-    return format_id
+            return format_id
+    return DBReport.GET_NOT_FOUND
 
 # Race.Serie DAO
+def get_all_series():
+    series = []
+    with DatabaseConnection.get_db_cursor() as cursor:
+        cursor.execute(f"SELECT * FROM {Table.serie.name}")
+        series_lines = cursor.fetchall()
+    for serie_line in series_lines:
+        serie = Serie(serie_line[0], serie_line[1], serie_line[2])
+        series.append(serie)
+    if len(series) > 0:
+        return series
+    return DBReport.GET_NOT_FOUND
+
 def get_serie_id(serie_p :Serie):
     serie_id = None
     if serie_p:

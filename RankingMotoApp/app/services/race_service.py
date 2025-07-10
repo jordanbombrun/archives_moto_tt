@@ -16,7 +16,7 @@ class RaceService:
     def add_race(self):
         # instanciation course
         serie = Serie('Extrême challenge', 2025)
-        new_race = Race('ALESTREM', date(2025, 1, 26), Format.EXTREME_ENDURO_RACE, 'Alès', serie, 10, 0, 3, 0)
+        new_race = Race('ALESTREM', date(2025, 1, 26), None ,'Alès', serie, 10, 0, 3, 0)
         result = create_race(new_race)
         if result not in [False, DBReport.CREATE_ERROR, DBReport.CREATE_ALREADY_EXISTS]:
             return True
@@ -57,6 +57,14 @@ class RaceService:
         #         return False
         # except Exception as e:
         #     return False
+
+    def get_all_formats(self):
+        result = get_all_formats()
+        return result
+
+    def get_all_series(self):
+        result = get_all_series()
+        return result  
 
     # return DBReport : OK , ERROR OR ALREADY EXISTS
     def add_serie(self, name_p = None, year_p = None):

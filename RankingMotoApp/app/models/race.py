@@ -1,31 +1,21 @@
 from datetime import date
-from enum import Enum
 
-# race format
-# Value has to be the same as the one used in the DB
-class Format(Enum):
-    CASSIC_ENDURO_RACE = "Enduro"
-    CROSS_COUNTRY_RACE = "Cross country"
-    EXTREME_ENDURO_RACE = "Enduro extrême"
-    MOTOCROSS_RACE = "Motocross"
-    SUPERCROSS_RACE = "Supercross"
-    ENDURO_SPRINT_RACE = "Enduro sprint"
-    RALLY_RACE = "Rallye"
-    SUPER_ENDURO_RACE = "Super enduro"
-    INCONNU = "Inconnu"
+class Format:
+    def __init__(self, id: int, name: str):
+        self.id = id
+        self.name = name
 
 class Serie:
-    def __init__(self, name: str, year: int):
+    def __init__(self, id: int, name: str, year: int):
+        self.id = id
         self.name = name
         self.year = year
 
 class Race:
-    def __init__(self, name: str, date: date = date(2000, 1, 1), format: Format = Format.INCONNU, location: str = 'inconnu', serie: Serie = None, nb_CP: int = 0, nb_SP: int = 0, nb_laps: int = 0, nb_rounds: int = 0):
+    def __init__(self, name: str, date: date = date(2000, 1, 1), format: Format = None, location: str = 'inconnu', serie: Serie = None, nb_CP: int = 0, nb_SP: int = 0, nb_laps: int = 0, nb_rounds: int = 0):
         self.name = name
         self.date = date
-        # Convert string format to Format enum
-        if isinstance(format, Format):
-            self.format = format
+        self.format = format if isinstance(format, Format) else None
         self.serie = serie if isinstance(serie, Serie) else None
         self.location = location
         self.riders = []
