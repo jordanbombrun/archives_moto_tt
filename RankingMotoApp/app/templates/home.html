@@ -1,20 +1,31 @@
 <h2>Ajouter une nouvelle course</h2>
 <form action="add_race" method="post">
     <div>
-        <label for="serie">Série :</label>
-        <select name="serie" id="serie" required>
+        <label for="race_name">Nom de la course :</label>
+        <input type="text" name="race_name" id="race_name" required>
+        <br>
+        <label for="race_date">Date :</label>
+        <input type="date" name="race_date" id="race_date" required>
+        <br>
+        <label for="race_location">Location :</label>
+        <input type="text" name="race_location" id="race_location" required>
+        <br>
+    </div>
+    <div>
+        <label for="race_serie_id">Série :</label>
+        <select name="race_serie_id" id="race_serie_id" required>
             <option value="">--Choisir une série--</option>
             {% for serie in series %}
-                <option value="{{ serie.id }}">{{ serie.name }}</option>
+                <option value="{{ serie.db_id }}">{{ serie.name }}</option>
             {% endfor %}
         </select>
     </div>
     <div>
-        <label for="format">Format de course:</label>
-        <select name="format" id="format" required>
+        <label for="race_format_id">Format de course:</label>
+        <select name="race_format_id" id="race_format_id" required>
             <option value="">--Choisir un format--</option>
             {% for format in formats %}
-                <option value="{{ format.id }}">{{ format.name }}</option>
+                <option value="{{ format.db_id }}">{{ format.name }}</option>
             {% endfor %}
         </select>
     </div>

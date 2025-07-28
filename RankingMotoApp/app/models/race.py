@@ -1,18 +1,19 @@
 from datetime import date
 
 class Format:
-    def __init__(self, id: int, name: str):
-        self.id = id
+    def __init__(self, name: str, id: int = None):
+        self.db_id = id
         self.name = name
 
 class Serie:
-    def __init__(self, id: int, name: str, year: int):
-        self.id = id
+    def __init__(self, name: str, year: int, id: int = None):
+        self.db_id = id
         self.name = name
         self.year = year
 
 class Race:
-    def __init__(self, name: str, date: date = date(2000, 1, 1), format: Format = None, location: str = 'inconnu', serie: Serie = None, nb_CP: int = 0, nb_SP: int = 0, nb_laps: int = 0, nb_rounds: int = 0):
+    def __init__(self, name: str, id: int = None, date: date = date(2000, 1, 1), format: Format = None, location: str = 'inconnu', serie: Serie = None, nb_CP: int = 0, nb_SP: int = 0, nb_laps: int = 0, nb_rounds: int = 0):
+        self.db_id = id
         self.name = name
         self.date = date
         self.format = format if isinstance(format, Format) else None

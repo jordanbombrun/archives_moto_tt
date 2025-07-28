@@ -1,7 +1,5 @@
 from datetime import date
-import re
-from bs4 import BeautifulSoup
-import requests
+from RankingMotoApp.app.models.race import Format, Race, Serie
 from RankingMotoApp.app.dao.race_dao import *
 from RankingMotoApp.app.utils.DBReport import DBReport
 
@@ -13,12 +11,21 @@ class RaceService:
 
     # Ajoute une course à partir d'un fichier html (source motott)
     # Retourne True si traitement OK, False sinon
-    def add_race(self):
-        # instanciation course
-        serie = Serie('Extrême challenge', 2025)
-        new_race = Race('ALESTREM', date(2025, 1, 26), None ,'Alès', serie, 10, 0, 3, 0)
-        result = create_race(new_race)
-        if result not in [False, DBReport.CREATE_ERROR, DBReport.CREATE_ALREADY_EXISTS]:
+    def add_race(self, name_p: str, date_p: date, location_p: str, serie_id_p: int, format_id_p: int) -> bool:
+        result_serie = dao_get_serie_by_id(serie_id_p)
+        if result_serie == DBReport.GET_NOT_FOUND:
+            serie_l = None
+        else:
+            serie_l = result_serie
+
+        result_format = dao_get_format_by_id(format_id_p)
+        if result_format == DBReport.GET_NOT_FOUND:
+            format_l = None
+        else:
+            format_l = result_format
+
+        new_race = Race(name_p, None, date_p, format_l ,location_p, serie_l, 10, 0, 3, 0)
+        if dao_create_race(new_race):
             return True
         return False  
           
@@ -59,19 +66,19 @@ class RaceService:
         #     return False
 
     def get_all_formats(self):
-        result = get_all_formats()
+        result = dao_get_all_formats()
         return result
 
     def get_all_series(self):
-        result = get_all_series()
+        result = dao_get_all_series()
         return result  
 
     # return DBReport : OK , ERROR OR ALREADY EXISTS
     def add_serie(self, name_p = None, year_p = None):
         new_serie = Serie(name_p, year_p)
-        get_result = get_serie_id_by_name_and_year(name_p, year_p)
+        get_result = dao_get_serie_id_by_name_and_year(name_p, year_p)
         if get_result is None:
-            create_result = create_serie(new_serie)
+            create_result = dao_create_serie(new_serie)
             if create_result in [None, DBReport.CREATE_ERROR]:
                 return DBReport.CREATE_ERROR
             elif create_result in [DBReport.CREATE_ALREADY_EXISTS]:

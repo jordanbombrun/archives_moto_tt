@@ -19,7 +19,13 @@ def home_race():
     
 
 def add_race():
-    if (race_service.add_race()):
+    name = request.form.get('race_name')
+    date = request.form.get('race_date')
+    location = request.form.get('race_location') 
+    serie_id = request.form.get('race_serie_id')
+    format_id = request.form.get('race_format_id')
+
+    if (race_service.add_race(name, date, location, serie_id, format_id)):
         return make_response('la course a été ajoutée avec succès !')
     else:
         return make_response('la course n\'a pas pu être ajoutée !')           
