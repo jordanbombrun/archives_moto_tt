@@ -9,7 +9,7 @@ class Table(Enum):
     team = "team"
     format = "format"
     category = "categorie"
-    race_categories = "race_categories"
+    race_category = "race_category"
     rider = "pilote"
     log_import_data = "log_import_data"
     participation = "participation"

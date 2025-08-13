@@ -15,7 +15,12 @@ def home_race():
         formats = result_get_formats
     else:
         formats = None
-    return render_template('home.html', series=series, formats=formats)
+    result_get_categories = race_service.get_all_categories()
+    if result_get_categories != DBReport.GET_NOT_FOUND:
+        categories = result_get_categories
+    else:
+        categories = None
+    return render_template('home.html', series=series, formats=formats, categories=categories)
     
 
 def add_race():
@@ -24,8 +29,9 @@ def add_race():
     location = request.form.get('race_location') 
     serie_id = request.form.get('race_serie_id')
     format_id = request.form.get('race_format_id')
+    categories_ids = request.form.getlist('race_category_id');
 
-    if (race_service.add_race(name, date, location, serie_id, format_id)):
+    if (race_service.add_race(name, date, location, serie_id, format_id, categories_ids)):
         return make_response('la course a été ajoutée avec succès !')
     else:
         return make_response('la course n\'a pas pu être ajoutée !')           

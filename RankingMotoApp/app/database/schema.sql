@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS "checkpoint" (
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS "race_categories" (
-	"race_id" INTEGER NOT NULL UNIQUE,
+CREATE TABLE IF NOT EXISTS "race_category" (
+	"race_id" INTEGER NOT NULL,
 	"category_id" INTEGER NOT NULL,
 	"nb_lap" INTEGER,
 	"nb_cp" INTEGER,

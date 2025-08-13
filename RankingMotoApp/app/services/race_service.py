@@ -11,24 +11,38 @@ class RaceService:
 
     # Ajoute une course à partir d'un fichier html (source motott)
     # Retourne True si traitement OK, False sinon
-    def add_race(self, name_p: str, date_p: date, location_p: str, serie_id_p: int, format_id_p: int) -> bool:
-        result_serie = dao_get_serie_by_id(serie_id_p)
-        if result_serie == DBReport.GET_NOT_FOUND:
-            serie_l = None
-        else:
-            serie_l = result_serie
+    def add_race(self, name_p: str, date_p: date, location_p: str, serie_id_p: int, format_id_p: int, categories_ids: list[str]) -> bool:
+        try:
+            result_serie = dao_get_serie_by_id(serie_id_p)
+            if result_serie == DBReport.GET_NOT_FOUND:
+                serie_l = None
+            else:
+                serie_l = result_serie
 
-        result_format = dao_get_format_by_id(format_id_p)
-        if result_format == DBReport.GET_NOT_FOUND:
-            format_l = None
-        else:
-            format_l = result_format
+            result_format = dao_get_format_by_id(format_id_p)
+            if result_format == DBReport.GET_NOT_FOUND:
+                format_l = None
+            else:
+                format_l = result_format
 
-        new_race = Race(name_p, None, date_p, format_l ,location_p, serie_l, 10, 0, 3, 0)
-        if dao_create_race(new_race):
-            return True
-        return False  
-          
+            result_categories_l = dao_get_categories_by_ids(categories_ids)
+            if result_categories_l == DBReport.GET_NOT_FOUND:
+                categories_l = None
+            else:
+                categories_l = result_categories_l
+            
+            new_race = Race(name_p, date_p, format_l ,location_p, serie_l)
+            if dao_create_race(new_race):
+                new_list_race_category_l = []
+                for category in categories_l:
+                    new_race_category_l = Race_category(new_race.db_id, category.db_id)
+                    dao_create_race_category(new_race_category_l)
+                    new_list_race_category_l.append(new_race_category_l)
+                return True
+            return False
+        except Exception as e:
+            return False
+
         #     soup = self.get_datas_from_source(os.path.join(os.path.dirname(__file__), "..", "templates", "page_utf8_short.html"))
         #     if (soup is not None):
         #         rows = soup.find_all("tr")
@@ -72,6 +86,10 @@ class RaceService:
     def get_all_series(self):
         result = dao_get_all_series()
         return result  
+
+    def get_all_categories(self):
+        result = dao_get_all_categories()
+        return result
 
     # return DBReport : OK , ERROR OR ALREADY EXISTS
     def add_serie(self, name_p = None, year_p = None):

@@ -14,7 +14,6 @@
     <div>
         <label for="race_serie_id">Série :</label>
         <select name="race_serie_id" id="race_serie_id" required>
-            <option value="">--Choisir une série--</option>
             {% for serie in series %}
                 <option value="{{ serie.db_id }}">{{ serie.name }}</option>
             {% endfor %}
@@ -23,16 +22,29 @@
     <div>
         <label for="race_format_id">Format de course:</label>
         <select name="race_format_id" id="race_format_id" required>
-            <option value="">--Choisir un format--</option>
             {% for format in formats %}
                 <option value="{{ format.db_id }}">{{ format.name }}</option>
             {% endfor %}
         </select>
+    </div>  
+    <div>
+        <p>Catégories :</p>
+        <div style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;">
+        {% for category in categories %}
+            <label>
+                <input type="checkbox" name="race_category_id" value="{{ category.db_id }}">{{ category.name }}
+            </label><br>
+        {% endfor %}
+        </div>
     </div>
     <input type="submit" value="OK">
 </form>
+
+
 <br>
 <br>
+
+
 <h2>Ajouter une nouvelle série</h2>
 <form action="add_serie" method="post">
     <div>
