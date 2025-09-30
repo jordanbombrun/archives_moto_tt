@@ -1,0 +1,75 @@
+<h2>Ajouter une nouvelle course</h2>
+<form action="add_race" method="post">
+    <div>
+        <label for="race_name">Nom de la course :</label>
+        <input type="text" name="race_name" id="race_name" required>
+        <br>
+        <label for="race_date">Date :</label>
+        <input type="date" name="race_date" id="race_date" required>
+        <br>
+        <label for="race_location">Location :</label>
+        <input type="text" name="race_location" id="race_location" required>
+        <br>
+    </div>
+    <div>
+        <label for="race_serie_id">Série :</label>
+        <select name="race_serie_id" id="race_serie_id" required>
+            {% for serie in series %}
+                <option value="{{ serie.db_id }}">{{ serie.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="race_format_id">Format de course:</label>
+        <select name="race_format_id" id="race_format_id" required>
+            {% for format in formats %}
+                <option value="{{ format.db_id }}">{{ format.name }}</option>
+            {% endfor %}
+        </select>
+    </div>  
+    <div>
+        <p>Catégories :</p>
+        <div style="max-height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;">
+        {% for category in categories %}
+            <label>
+                <input type="checkbox" name="race_category_id" value="{{ category.db_id }}">{{ category.name }}
+            </label><br>
+        {% endfor %}
+        </div>
+    </div>
+    <input type="submit" value="OK">
+</form>
+
+
+<br>
+<br>
+
+
+<h2>Ajouter une nouvelle série</h2>
+<form action="add_serie" method="post">
+    <div>
+        <input type="text" name="new_serie_name" id="new_serie_name" placeholder="Nom de la série">
+        <input type="number" name="new_serie_year" id="new_serie_year" placeholder="Année" min="1900" max="2100">
+        <input type="submit" value="OK">
+    </div>
+</form>
+
+
+<!-- 
+<h2>Ajouter une course</h2>
+<form action="course_details" method="post">
+    <div>
+        <label for="race_url">Entrez le lien vers le résultat de la course :</label>
+        <input type="text" name="race_url" required>
+    </div>
+    <input type="submit" value="OK">
+</form>
+
+<h2>Rechercher un pilote pour la course ...</h2>
+<form action="search_rider_by_number" method="post">
+    <div>
+        <label for="rider_number">Entrez le numéro du pilote : </label>
+        <input type="text" name="rider_number">
+    </div>
+    <input type="submit" value="OK">
+</form> -->

@@ -4,7 +4,7 @@ from RankingMotoApp.app.utils.DBReport import DBReport
 
 race_service = RaceService()
 
-def home_race():
+def render_form_add_race():
     result_get_series = race_service.get_all_series()
     if result_get_series != DBReport.GET_NOT_FOUND:
         series = result_get_series
@@ -20,8 +20,10 @@ def home_race():
         categories = result_get_categories
     else:
         categories = None
-    return render_template('home.html', series=series, formats=formats, categories=categories)
+    return render_template('add_race.html', series=series, formats=formats, categories=categories)
     
+def render_list_race():
+    return render_template('list_race.html')
 
 def add_race():
     name = request.form.get('race_name')
