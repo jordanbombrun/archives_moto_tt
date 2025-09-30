@@ -1,1 +1,46 @@
-<h1>list races</h1>
+<h1>Liste des courses</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Nom de la course</th>
+            <th>Date</th>
+            <th>Lieu</th>
+            <th>Série</th>
+            <th>Format</th>
+            <th>Catégories</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for race in races %}
+        <tr>
+            <td>{{ race.name }}</td>
+            <td>{{ race.date }}</td>
+            <td>{{ race.location }}</td>
+            <td>
+                {% if race.serie %}
+                    {{ race.serie.name }} ({{ race.serie.year }})
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                {% if race.format %}
+                    {{ race.format.name }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                {% if race.race_categories %}
+                    {% for category in race.race_categories %}
+                        {{ category.name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

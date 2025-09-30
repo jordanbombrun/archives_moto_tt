@@ -6,6 +6,7 @@ class DBReport(Enum):
     CREATE_ERROR = "create_error"
     GET_OK = "get_ok"
     GET_NOT_FOUND = "get_not_found"
+    GET_ERROR = "get_error"
     UPDATE_OK = "update_ok"
     UPDATE_NOT_FOUND = "update_not_found"
     UPDATE_ERROR = "update_error"

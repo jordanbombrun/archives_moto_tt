@@ -79,6 +79,10 @@ class RaceService:
         # except Exception as e:
         #     return False
 
+    def get_all_races(self):
+        result = dao_get_all_races()
+        return result
+
     def get_all_formats(self):
         result = dao_get_all_formats()
         return result

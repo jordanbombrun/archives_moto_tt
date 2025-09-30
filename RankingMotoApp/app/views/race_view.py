@@ -6,24 +6,28 @@ race_service = RaceService()
 
 def render_form_add_race():
     result_get_series = race_service.get_all_series()
-    if result_get_series != DBReport.GET_NOT_FOUND:
+    if result_get_series != DBReport.GET_NOT_FOUND and result_get_series != DBReport.GET_ERROR:
         series = result_get_series
     else:
         series = None
     result_get_formats = race_service.get_all_formats()
-    if result_get_formats != DBReport.GET_NOT_FOUND:
+    if result_get_formats != DBReport.GET_NOT_FOUND and result_get_formats != DBReport.GET_ERROR:
         formats = result_get_formats
     else:
         formats = None
     result_get_categories = race_service.get_all_categories()
-    if result_get_categories != DBReport.GET_NOT_FOUND:
+    if result_get_categories != DBReport.GET_NOT_FOUND and result_get_categories != DBReport.GET_ERROR:
         categories = result_get_categories
     else:
         categories = None
     return render_template('add_race.html', series=series, formats=formats, categories=categories)
     
-def render_list_race():
-    return render_template('list_race.html')
+def render_list_all_race():
+    res_get_races = race_service.get_all_races()
+    if res_get_races != DBReport.GET_NOT_FOUND and res_get_races != DBReport.GET_ERROR: 
+        return render_template('list_race.html', races=res_get_races)
+    return make_response('Erreur pendant la récupération des courses')
+
 
 def add_race():
     name = request.form.get('race_name')

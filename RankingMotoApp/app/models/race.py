@@ -65,7 +65,8 @@ class Race:
     #     self.location = location
     #     self.riders = []
 
-    def __init__(self, name: str, date: date = date(2000, 1, 1), format: Format = None, location: str = 'inconnu', serie: Serie = None):
+    def __init__(self, name: str, db_id: int= 0, date: date = date(2000, 1, 1), format: Format = None, location: str = 'inconnu', serie: Serie = None):
+        self._db_id = db_id
         self.name = name
         self.date = date
         self.location = location
