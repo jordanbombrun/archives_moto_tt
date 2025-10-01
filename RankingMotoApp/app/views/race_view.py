@@ -20,12 +20,12 @@ def render_form_add_race():
         categories = result_get_categories
     else:
         categories = None
-    return render_template('add_race.html', series=series, formats=formats, categories=categories)
+    return render_template('add_race.html', active_page='add_race',series=series, formats=formats, categories=categories)
     
 def render_list_all_race():
     res_get_races = race_service.get_all_races()
     if res_get_races != DBReport.GET_NOT_FOUND and res_get_races != DBReport.GET_ERROR: 
-        return render_template('list_race.html', races=res_get_races)
+        return render_template('list_race.html', active_page='list_race', races=res_get_races)
     return make_response('Erreur pendant la récupération des courses')
 
 

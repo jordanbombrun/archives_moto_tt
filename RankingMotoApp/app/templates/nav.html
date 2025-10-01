@@ -1,0 +1,14 @@
+<nav style="margin-bottom: 20px;">
+    <a href="{{ url_for('render_home') }}"
+       style="padding:8px; {% if active_page == 'home' %}font-weight:bold; color:blue;{% endif %}">
+        Accueil
+    </a>
+    <a href="{{ url_for('render_list_all_race') }}"
+       style="padding:8px; {% if active_page == 'list_race' %}font-weight:bold; color:blue;{% endif %}">
+        Liste des courses
+    </a>
+    <a href="{{ url_for('render_form_add_race') }}"
+       style="padding:8px; {% if active_page == 'add_race' %}font-weight:bold; color:blue;{% endif %}">
+        Ajouter une course
+    </a>
+</nav>
