@@ -7,6 +7,10 @@
        style="padding:8px; {% if active_page == 'list_race' %}font-weight:bold; color:blue;{% endif %}">
         Liste des courses
     </a>
+        <a href="{{ url_for('render_list_all_serie') }}"
+       style="padding:8px; {% if active_page == 'list_serie' %}font-weight:bold; color:blue;{% endif %}">
+        Liste des championnats
+    </a>
     <a href="{{ url_for('render_form_add_race') }}"
        style="padding:8px; {% if active_page == 'add_race' %}font-weight:bold; color:blue;{% endif %}">
         Ajouter une course

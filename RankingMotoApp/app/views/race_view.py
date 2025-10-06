@@ -28,7 +28,6 @@ def render_list_all_race():
         return render_template('list_race.html', active_page='list_race', races=res_get_races)
     return make_response('Erreur pendant la récupération des courses')
 
-
 def add_race():
     name = request.form.get('race_name')
     date = request.form.get('race_date')
@@ -49,6 +48,12 @@ def add_serie():
         return make_response('la série a été ajoutée avec succès !')
     else:
         return make_response('la série n\'a pas pu être ajoutée !')
+
+def render_list_all_serie():
+    res_get_series = race_service.get_all_series()
+    if res_get_series != DBReport.GET_NOT_FOUND and res_get_series != DBReport.GET_ERROR: 
+        return render_template('list_serie.html', active_page='list_serie', series=res_get_series)
+    return make_response('Erreur pendant la récupération des courses')
 
 # def add_race_from_url():
 #     datas_list = []

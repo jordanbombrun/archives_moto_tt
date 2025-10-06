@@ -1,0 +1,20 @@
+{% include "nav.html" %}
+
+<h1>Liste des championnats</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Nom du championnat</th>
+            <th>Année</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for serie in series %}
+        <tr>
+            <td>{{ serie.name }}</td>
+            <td>{{ serie.year }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
