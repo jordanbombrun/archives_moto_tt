@@ -28,7 +28,7 @@ def render_list_all_race():
         return render_template('list_race.html', active_page='list_race', races=res_get_races)
     return make_response('Erreur pendant la récupération des courses')
 
-def add_race():
+def race_added():
     name = request.form.get('race_name')
     date = request.form.get('race_date')
     location = request.form.get('race_location') 
