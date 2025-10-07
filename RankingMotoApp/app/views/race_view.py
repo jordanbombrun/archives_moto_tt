@@ -28,6 +28,22 @@ def render_list_all_race():
         return render_template('list_race.html', active_page='list_race', races=res_get_races)
     return make_response('Erreur pendant la récupération des courses')
 
+def render_list_races_for_serie(serie_id: int):
+    try:
+        serie_id_int = int(serie_id)
+        if serie_id_int <= 0:
+            return make_response('Identifiant de série invalide.', 400)
+    except (ValueError, TypeError):
+        return make_response('Identifiant de série invalide.', 400)
+
+    res_get_serie = race_service.get_serie_by_id(serie_id_int)
+    if res_get_serie == DBReport.GET_NOT_FOUND or res_get_serie == DBReport.GET_ERROR:
+        return make_response('Série non trouvée.', 404)
+    res_get_races = race_service.get_all_race_for_serie(serie_id_int)
+    if res_get_races != DBReport.GET_NOT_FOUND and res_get_races != DBReport.GET_ERROR:
+        return render_template('list_race.html', active_page='', races=res_get_races, serie=res_get_serie)
+    return make_response('Erreur pendant la récupération des courses pour cette série')
+
 def race_added():
     name = request.form.get('race_name')
     date = request.form.get('race_date')

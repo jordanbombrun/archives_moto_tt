@@ -1,5 +1,5 @@
 from datetime import date
-from RankingMotoApp.app.models.race import Format, Race, Serie
+from RankingMotoApp.app.models.race import *
 from RankingMotoApp.app.dao.race_dao import *
 from RankingMotoApp.app.utils.DBReport import DBReport
 
@@ -83,6 +83,10 @@ class RaceService:
         result = dao_get_all_races()
         return result
 
+    def get_all_race_for_serie(self, serie_id_p: int):
+        result = dao_get_all_races_for_serie(serie_id_p)
+        return result
+
     def get_all_formats(self):
         result = dao_get_all_formats()
         return result
@@ -91,6 +95,11 @@ class RaceService:
         result = dao_get_all_series()
         return result  
 
+    def get_serie_by_id(self, serie_id_p: int):
+        result = dao_get_serie_by_id(serie_id_p)
+        return result
+
+    
     def get_all_categories(self):
         result = dao_get_all_categories()
         return result

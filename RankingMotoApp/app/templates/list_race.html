@@ -1,6 +1,6 @@
 {% include "nav.html" %}
 
-<h1>Liste des courses</h1>
+<h1>Liste des courses {% if serie %} pour le championnat : <br> {{serie.name}} {% endif %}</h1>
 
 <table border="1">
     <thead>
