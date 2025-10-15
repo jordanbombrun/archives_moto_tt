@@ -1,5 +1,10 @@
 {% include "nav.html" %}
 
+<h2>Ajout course Test</h2>
+<form action="course_importee" method="post">
+    <input type="submit" value="OK">
+</form>
+
 <h2>Ajouter une nouvelle course</h2>
 <form action="course_ajoutee" method="post">
     <div>
@@ -55,23 +60,3 @@
         <input type="submit" value="OK">
     </div>
 </form>
-
-
-<!-- 
-<h2>Ajouter une course</h2>
-<form action="course_details" method="post">
-    <div>
-        <label for="race_url">Entrez le lien vers le résultat de la course :</label>
-        <input type="text" name="race_url" required>
-    </div>
-    <input type="submit" value="OK">
-</form>
-
-<h2>Rechercher un pilote pour la course ...</h2>
-<form action="search_rider_by_number" method="post">
-    <div>
-        <label for="rider_number">Entrez le numéro du pilote : </label>
-        <input type="text" name="rider_number">
-    </div>
-    <input type="submit" value="OK">
-</form> -->

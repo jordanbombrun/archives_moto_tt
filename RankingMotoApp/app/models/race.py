@@ -55,23 +55,37 @@ class Race_category:
 
 
 class Race:
-    # def __init__(self, name: str, id: int = None, date: date = date(2000, 1, 1), format: Format = None, location: str = 'inconnu', serie: Serie = None, race_categories: list[Race_categories] = None):
-    #     self.db_id = id
-    #     self.name = name
-    #     self.date = date
-    #     self.format = format if isinstance(format, Format) else None
-    #     self.serie = serie if isinstance(serie, Serie) else None
-    #     self.race_categories = race_categories if isinstance(race_categories, list[Race_categories]) else None
-    #     self.location = location
-    #     self.riders = []
-
-    def __init__(self, name: str, db_id: int= 0, date: date = date(2000, 1, 1), format: Format = None, location: str = 'inconnu', serie: Serie = None):
-        self._db_id = db_id
+    def __init__(self, name: str, 
+                 id: int = None, 
+                 date: date = date(2000, 1, 1), 
+                 format: Format = None, 
+                 location: str = 'inconnu', 
+                 serie: Serie = None, 
+                 race_categories: list[Race_category] = None):
+        self.db_id = id
         self.name = name
         self.date = date
-        self.location = location
-        self.serie = serie if isinstance(serie, Serie) else None
         self.format = format if isinstance(format, Format) else None
+        self.serie = serie if isinstance(serie, Serie) else None
+        self.location = location
+        self.riders = []
+        if isinstance(race_categories, list) and all(isinstance(cat, Race_category) for cat in race_categories):
+            self.race_categories = race_categories
+        else:
+            self.race_categories = None
+
+    # def __init__(self, name: str, 
+    #              db_id: int= 0, 
+    #              date: date = date(2000, 1, 1), 
+    #              format: Format = None, 
+    #              location: str = 'inconnu', 
+    #              serie: Serie = None):
+    #     self._db_id = db_id
+    #     self.name = name
+    #     self.date = date
+    #     self.location = location
+    #     self.serie = serie if isinstance(serie, Serie) else None
+    #     self.format = format if isinstance(format, Format) else None
 
     # def add_riders(self, riders_P):
     #     self.riders.extend(riders_P)  # Ajoute tous les pilotes à la liste
@@ -91,15 +105,14 @@ class Race:
     
     @db_id.setter
     def db_id(self, value: int):
-        if value > 0 :
-            self._db_id = value
+        self._db_id = value
 
-    @property
-    def race_categories(self):
-        return self._race_categories
+    # @property
+    # def race_categories(self):
+    #     return self._race_categories
 
-    @race_categories.setter
-    def race_categories(self, value: list[Race_category]):
-        self._race_categories = value
+    # @race_categories.setter
+    # def race_categories(self, value: list[Race_category]):
+    #     self._race_categories = value
 
 

@@ -1,6 +1,7 @@
 from flask import make_response, render_template, request
 from RankingMotoApp.app.services.race_service import RaceService
 from RankingMotoApp.app.utils.DBReport import DBReport
+from datetime import date
 
 race_service = RaceService()
 
@@ -56,6 +57,20 @@ def race_added():
         return make_response('la course a été ajoutée avec succès !')
     else:
         return make_response('la course n\'a pas pu être ajoutée !')           
+
+def race_added2():
+    name = 'race_name'
+    race_date = date(2025, 1, 26)
+    location = 'race_location'
+    serie_id = 1
+    format_id = 4
+    categories_ids = ['1','2','3','4','5']; 
+    url = '../templates/ALESTREM2025.html'
+
+    if (race_service.add_race2(name, race_date, location, serie_id, format_id, categories_ids, url)):
+        return make_response('la course a été ajoutée avec succès !')
+    else:
+        return make_response('la course n\'a pas pu être ajoutée !')  
 
 def add_serie():
     name = request.form.get('new_serie_name')
