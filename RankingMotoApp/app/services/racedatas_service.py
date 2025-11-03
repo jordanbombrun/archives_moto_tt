@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import requests
 from RankingMotoApp.app.models.race import Race
 from RankingMotoApp.app.models.rider import Rider
+from RankingMotoApp.app.models.participation import Participation
 
 
 class RaceDatasService:
@@ -24,32 +25,70 @@ class RaceDatasService:
             if soup is not None:
                 rows = soup.find_all("tr")
                 i = 0
-                old_rider = None 
-                current_rider = None
+                old_number = None
+                current_participation = None
                 init_nb_lap = False
+
                 for row in rows:
                     td_values = [td.text.strip() for td in row.find_all("td", recursive=False)]
-                    if (i == 3): # ligne des entêtes
-                        race.nb_CP = len(td_values) - 4 
-                    elif (i > 3): # filtre les 1ères lignes 
+
+                    if (i == 3):  # ligne des entêtes
+                        race.nb_CP = max(0, len(td_values) - 4)
+                    elif (i > 3):  # filtre les 1ères lignes
                         if not init_nb_lap:
-                            race.nb_laps = int(td_values[3])
+                            try:
+                                race.nb_laps = int(td_values[3])
+                            except Exception:
+                                race.nb_laps = 0
                             init_nb_lap = True
-                        if (td_values[1] != ''):
-                            current_line_number = td_values[1]
-                        if (old_rider is None or current_line_number != old_rider.number): # nouveau pilote
-                            current_rider = Rider(td_values[0], td_values[1], td_values[2], td_values[3])
-                            current_rider.chronos_lap_CP = [[] for _ in range(int(race.nb_laps))]
-                            current_rider.positions_lap_CP = [[] for _ in range(int(race.nb_laps))]
-                            race.riders.append(current_rider)
-                        else : # même pilote, mais tour différent
-                            current_rider.current_lap = td_values[3]
+
+                        current_line_number = td_values[1] if len(td_values) > 1 else ''
+
+                        # nouveau pilote / nouvelle participation
+                        if current_line_number != '' and (old_number is None or current_line_number != old_number):
+                            rider_name = td_values[2] if len(td_values) > 2 else ''
+                            try:
+                                final_pos = int(td_values[0]) if td_values[0] != '' else None
+                            except Exception:
+                                final_pos = None
+                            try:
+                                number = int(td_values[1]) if td_values[1] != '' else None
+                            except Exception:
+                                number = None
+                            try:
+                                current_lap = int(td_values[3]) if td_values[3] != '' else 0
+                            except Exception:
+                                current_lap = 0
+
+                            current_participation = Participation(
+                                final_position=final_pos,
+                                number=number,
+                                current_lap=current_lap
+                            )
+
+                            nb_laps = int(race.nb_laps) if getattr(race, "nb_laps", None) else 0
+                            current_participation.chronos_lap_CP = [[] for _ in range(nb_laps)]
+                            current_participation.positions_lap_CP = [[] for _ in range(nb_laps)]
+
+                            rider = Rider(name=rider_name)
+                            rider.add_participation(current_participation)
+                            race.riders.append(rider)
+
+                        else:  # même pilote, mais tour différent
+                            if current_participation is not None:
+                                try:
+                                    current_participation.current_lap = int(td_values[3]) if td_values[3] != '' else current_participation.current_lap
+                                except Exception:
+                                    pass
+
+                        # ajout des chronos/positions pour la participation courante
                         for j, chrono_CP in enumerate(td_values):
-                            if (j > 3):
-                                current_rider.add_chrono(chrono_CP)              
-                        old_rider = current_rider
+                            if (j > 3) and current_participation is not None:
+                                current_participation.add_chrono(chrono_CP)
+
+                        old_number = str(current_participation.number) if (current_participation and current_participation.number is not None) else old_number
+
                     i += 1
-                    temp = 'test'
                 return True
             else:
                 return False
@@ -128,7 +167,7 @@ class RaceDatasService:
     #     print("Aucun pilote trouvé pour ce numéro")
 
 
-    
+
 
 
 

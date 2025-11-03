@@ -4,13 +4,20 @@ from datetime import time
 
 
 class Rider:
-    def __init__(self, position, number, name, current_lap):
-        self.final_position = position  # Position finale
-        self.number = number  # Numéro du pilote
-        self.name = name  # Nom du pilote
-        self.current_lap = current_lap  # Numéro du tour en cours
-        self.chronos_lap_CP = [] # liste des temps de passage, par tour
-        self.positions_lap_CP = [] # liste des positions pour chaque CP, par tour
+    def __init__(self, name: str, db_id: int = None):
+        self.db_id = db_id  # identifiant en base, None si non renseigné
+        self.name = name
+        self.participations = []  # liste d'objets Participation
+
+    def add_participation(self, participation):
+        # évite les doublons simples
+        if participation not in self.participations:
+            self.participations.append(participation)
+            # lien bidirectionnel si l'objet Participation contient un attribut rider
+            try:
+                participation.rider = self
+            except Exception:
+                pass
 
     def add_chrono(self, *chrono_P):
         for t in chrono_P:
@@ -20,7 +27,7 @@ class Rider:
     
     def add_position(self, *position_P):
         for pos in position_P:
-            self.positions_lap_CP[int(self.tour_courant)-1].append(pos)
+            self.positions_lap_CP[int(self.current_lap)-1].append(pos)
 
     def convert_time(self, horaire):
         try:
