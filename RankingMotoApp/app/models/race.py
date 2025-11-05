@@ -68,7 +68,7 @@ class Race:
         self.format = format if isinstance(format, Format) else None
         self.serie = serie if isinstance(serie, Serie) else None
         self.location = location
-        self.riders = []
+        self.participations = [] 
         if isinstance(race_categories, list) and all(isinstance(cat, Race_category) for cat in race_categories):
             self.race_categories = race_categories
         else:

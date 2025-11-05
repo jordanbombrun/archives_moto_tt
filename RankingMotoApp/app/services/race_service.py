@@ -200,7 +200,10 @@ class RaceService:
                         except Exception:
                             current_lap = 0
 
+                        rider = Rider(name=rider_name)
                         current_participation = Participation(
+                            race=race_p,
+                            rider=rider,
                             final_position=final_pos,
                             number=number,
                             current_lap=current_lap
@@ -209,9 +212,7 @@ class RaceService:
                         current_participation.chronos_lap_CP = [[] for _ in range(nb_laps)]
                         current_participation.positions_lap_CP = [[] for _ in range(nb_laps)]
 
-                        rider = Rider(name=rider_name)
-                        rider.add_participation(current_participation)
-                        race_p.riders.append(rider)
+                        race_p.participations.append(current_participation)  # Changed from riders.append()
 
                     else:  # même pilote, mais tour différent
                         if current_participation is not None:

@@ -1,23 +1,33 @@
 from datetime import time
 from typing import Optional
 
+from RankingMotoApp.app.models.race import Category, Race
 from RankingMotoApp.app.models.rider import Rider
 
 
 class Participation:
     def __init__(
         self,
-        final_position: Optional[int] = None,
-        number: Optional[int] = None,
-        current_lap: int = 0,
-        db_id: Optional[int] = None,
+        race: Optional[Race] = None,
         rider: Optional[Rider] = None,
+        number: Optional[int] = None,
+        category: Optional[Category] = None,
+        final_position: Optional[int] = None,
+        db_id: Optional[int] = None,
     ):
         self.db_id = db_id
+        if category is not None and not isinstance(category, Category):  # instance of Category or None
+            raise TypeError("rider must be an instance of Rider")
+        self.category = category    
+        if rider is not None and not isinstance(rider, Rider):
+            raise TypeError("rider must be an instance of Rider")
         self.rider = rider  # instance de Rider ou None
+        if race is not None and not isinstance(race, 'Race'):
+            raise TypeError("race must be an instance of Race")
+        self.race = race   # instance de Race ou None
         self.final_position = final_position
         self.number = number
-        self.current_lap = current_lap
+        self.current_lap = 0
         self.chronos_lap_CP = []      # liste de listes : par tour, liste des chronos
         self.positions_lap_CP = []    # liste de listes : par tour, positions aux CP
 

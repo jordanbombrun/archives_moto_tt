@@ -2,22 +2,16 @@
 
 from datetime import time
 
-
 class Rider:
-    def __init__(self, name: str, db_id: int = None):
-        self.db_id = db_id  # identifiant en base, None si non renseigné
+    def __init__(self, name: str = "inconnu", db_id: int = None):
+        self.db_id = db_id
         self.name = name
-        self.participations = []  # liste d'objets Participation
 
-    def add_participation(self, participation):
-        # évite les doublons simples
-        if participation not in self.participations:
-            self.participations.append(participation)
-            # lien bidirectionnel si l'objet Participation contient un attribut rider
-            try:
-                participation.rider = self
-            except Exception:
-                pass
+    # def add_participation(self, participation):
+    #     # évite les doublons simples
+    #     if participation not in self.participations:
+    #         self.participations.append(participation)
+    #         participation.rider = self
 
     def add_chrono(self, *chrono_P):
         for t in chrono_P:
