@@ -1,7 +1,7 @@
 from datetime import date
-import os
 from bs4 import BeautifulSoup
-import requests
+from RankingMotoApp.app.dao.participation_dao import *
+from RankingMotoApp.app.dao.rider_dao import *
 from RankingMotoApp.app.models.race import *
 from RankingMotoApp.app.dao.race_dao import *
 from RankingMotoApp.app.models.rider import Rider
@@ -99,19 +99,16 @@ class RaceService:
             soup_race_datas = racedatas_service.collect_datas_from_source(url_p)
             if (soup_race_datas is not None):
                 if (racedatas_service.parse_datas(new_race, soup_race_datas)):
-                    return True
-            else:
-                return False
-
-
-            # get and parse datas from html file
-            datas_list = []
-            soup = BeautifulSoup()
-            if (self.collect_datas_from_source(url_p, soup)):
-                if (self.parse_race_datas_from_web_url(new_race, datas_list, soup)):
+                    for participation_l in new_race.participations:
+                        result_rider = dao_create_rider(participation_l.rider)
+                        if not result_rider:
+                            return False
+                        else:
+                            result_part = dao_create_participation(participation_l)
+                            if not result_part:
+                                return False
                     return True
             return False
-                
         except Exception as e:
             return False
 

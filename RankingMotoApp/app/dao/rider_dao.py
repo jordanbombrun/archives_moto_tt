@@ -12,9 +12,8 @@ def dao_create_rider(rider_p: Rider):
                 (rider_p.name,)
             )
             rider_id = cursor.lastrowid
-            if rider_id:
-                rider_p.db_id = rider_id
-                return True
+            rider_p.db_id = rider_id
+            return True
     except sqlite3.IntegrityError:
         return DBReport.CREATE_ALREADY_EXISTS
     except Exception:

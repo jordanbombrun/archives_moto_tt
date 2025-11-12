@@ -10,17 +10,18 @@ def dao_create_participation(participation_p: Participation):
         with DatabaseConnection.get_db_cursor() as cursor:
             cursor.execute(
                 f"""INSERT INTO {Table.participation.name} 
-                (race_id, rider_id, category_id, number, final_position, current_lap) 
+                (race_id, rider_id, number, category_id, final_position, moto) 
                 VALUES (?, ?, ?, ?, ?, ?)""",
                 (
                     participation_p.race.db_id if participation_p.race else None,
                     participation_p.rider.db_id if participation_p.rider else None,
-                    participation_p.category.db_id if participation_p.category else None,
                     participation_p.number,
+                    participation_p.category.db_id if participation_p.category else None,
                     participation_p.final_position,
-                    participation_p.current_lap
+                    None
                 )
             )
+            participation_p.db_id = cursor.lastrowid
             return True
     except sqlite3.IntegrityError:
         return DBReport.CREATE_ALREADY_EXISTS
