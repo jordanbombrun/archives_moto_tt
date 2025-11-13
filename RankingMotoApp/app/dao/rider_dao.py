@@ -4,21 +4,35 @@ from RankingMotoApp.app.database.database_connection import DatabaseConnection
 from RankingMotoApp.app.models.rider import Rider
 from RankingMotoApp.app.utils.DBReport import DBReport
 
+# retourne True si ok, DBReport sinon
 def dao_create_rider(rider_p: Rider):
     try:
         with DatabaseConnection.get_db_cursor() as cursor:
             cursor.execute(
-                f"INSERT INTO {Table.rider.name} (name) VALUES (?)", 
+                f"INSERT INTO {Table.rider.name} (name) VALUES (?)",
                 (rider_p.name,)
             )
-            rider_id = cursor.lastrowid
-            rider_p.db_id = rider_id
+            rider_p.db_id = cursor.lastrowid
             return True
     except sqlite3.IntegrityError:
         return DBReport.CREATE_ALREADY_EXISTS
     except Exception:
         return DBReport.CREATE_ERROR
     return False
+
+def dao_get_rider_by_name(name: str):
+    try:
+        with DatabaseConnection.get_db_cursor() as cursor:
+            cursor.execute(
+                f"SELECT * FROM {Table.rider.name} WHERE name = ?",
+                (name,)
+            )
+            row = cursor.fetchone()
+            if row:
+                return Rider(name=row[1], db_id=row[0])
+        return DBReport.GET_NOT_FOUND
+    except Exception:
+        return DBReport.GET_ERROR
 
 def dao_get_rider_by_id(rider_id: int):
     try:

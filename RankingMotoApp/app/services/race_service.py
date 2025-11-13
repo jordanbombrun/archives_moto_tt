@@ -100,13 +100,16 @@ class RaceService:
             if (soup_race_datas is not None):
                 if (racedatas_service.parse_datas(new_race, soup_race_datas)):
                     for participation_l in new_race.participations:
-                        result_rider = dao_create_rider(participation_l.rider)
-                        if not result_rider:
-                            return False
+                        result_get_rider = dao_get_rider_by_name(participation_l.rider.name)
+                        if isinstance(result_get_rider, Rider):
+                            participation_l.rider = result_get_rider
                         else:
-                            result_part = dao_create_participation(participation_l)
-                            if not result_part:
+                            result_create_rider = dao_create_rider(participation_l.rider)
+                            if not result_create_rider: 
                                 return False
+                        result_part = dao_create_participation(participation_l)
+                        if not result_part:
+                            return False
                     return True
             return False
         except Exception as e:
