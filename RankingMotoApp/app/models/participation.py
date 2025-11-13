@@ -1,35 +1,51 @@
+from __future__ import annotations
 from datetime import time
-from typing import Optional
+from typing import Optional, TYPE_CHECKING, List
 
-from RankingMotoApp.app.models.race import Category, Race
-from RankingMotoApp.app.models.rider import Rider
+from RankingMotoApp.app.models.race import Category
 
+if TYPE_CHECKING:
+    from RankingMotoApp.app.models.race import Race
+    from RankingMotoApp.app.models.rider import Rider
 
 class Participation:
     def __init__(
         self,
-        race: Optional[Race] = None,
-        rider: Optional[Rider] = None,
+        race: Optional['Race'] = None,
+        rider: Optional['Rider'] = None,
         number: Optional[int] = None,
         category: Optional[Category] = None,
         final_position: Optional[int] = None,
         db_id: Optional[int] = None,
     ):
-        self.db_id = db_id
-        if category is not None and not isinstance(category, Category):  # instance of Category or None
-            raise TypeError("rider must be an instance of Rider")
-        self.category = category    
-        if rider is not None and not isinstance(rider, Rider):
-            raise TypeError("rider must be an instance of Rider")
-        self.rider = rider  # instance de Rider ou None
-        if race is not None and not isinstance(race, 'Race'):
-            raise TypeError("race must be an instance of Race")
-        self.race = race   # instance de Race ou None
-        self.final_position = final_position
-        self.number = number
-        self.current_lap = 0
-        self.chronos_lap_CP = []      # liste de listes : par tour, liste des chronos
-        self.positions_lap_CP = []    # liste de listes : par tour, positions aux CP
+        try:
+            self.db_id = db_id
+
+            if category is not None and not isinstance(category, Category):  # instance of Category or None
+                raise TypeError("category must be an instance of Category")
+            self.category = category
+
+            # runtime check for Rider to avoid circular import at module import time
+            if rider is not None:
+                from RankingMotoApp.app.models.rider import Rider as _Rider
+                if not isinstance(rider, _Rider):
+                    raise TypeError("rider must be an instance of Rider")
+            self.rider = rider  # instance de Rider ou None
+
+            # runtime check for Race to avoid passing a string to isinstance
+            if race is not None:
+                from RankingMotoApp.app.models.race import Race as _Race
+                if not isinstance(race, _Race):
+                    raise TypeError("race must be an instance of Race")
+            self.race = race   # instance de Race ou None
+
+            self.final_position = final_position
+            self.number = number
+            self.current_lap = 0
+            self.chronos_lap_CP: List[List[time]] = []      # liste de listes : par tour, liste des chronos
+            self.positions_lap_CP: List[List[int]] = []    # liste de listes : par tour, positions aux CP
+        except Exception as e:
+            raise e
 
     def _ensure_lap_lists(self, lap_index: int):
         # s'assure que les structures pour le tour existent
@@ -52,7 +68,7 @@ class Participation:
         for pos in position_P:
             self.positions_lap_CP[lap_idx].append(pos)
 
-    def convert_time(self, horaire: str):
+    def convert_time(self, horaire: Optional[str]):
         try:
             if horaire is None:
                 return None

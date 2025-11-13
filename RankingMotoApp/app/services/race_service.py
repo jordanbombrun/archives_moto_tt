@@ -71,13 +71,6 @@ class RaceService:
             else:
                 format_l = result_format
 
-            new_race = Race(
-                name=name_p,
-                date=date_p,
-                format=format_l,
-                location=location_p,
-                serie=serie_l
-            )
 
             # todo : ajouter liste de race_category dans l'instance Race
             # result_racecategories_l = dao_get_race_categories_by_id(categories_ids)
@@ -86,16 +79,27 @@ class RaceService:
             # else:
             #     racecategories_l = result_racecategories_l
             
-            if dao_create_race(new_race):
-                new_list_race_category_l = []
+            result_get_race = dao_get_race_by_name_and_date(name_p, date_p)
+            if isinstance(result_get_race, Race):
+                return DBReport.CREATE_ALREADY_EXISTS
+            else:
+                new_race = Race(
+                    name=name_p,
+                    date=date_p,
+                    format=format_l,
+                    location=location_p,
+                    serie=serie_l
+                )
+                result_create_race = dao_create_race(new_race)
+                if not result_create_race: 
+                    return DBReport.CREATE_ERROR
+
+                # new_list_race_category_l = []
                 # for category in categories_l:
                 #     new_race_category_l = Race_category(new_race.db_id, category.db_id)
                 #     dao_create_race_category(new_race_category_l)
                 #     new_list_race_category_l.append(new_race_category_l)
                 
-            else:
-                return DBReport.CREATE_ERROR
-
             soup_race_datas = racedatas_service.collect_datas_from_source(url_p)
             if (soup_race_datas is not None):
                 if (racedatas_service.parse_datas(new_race, soup_race_datas)):
@@ -106,14 +110,14 @@ class RaceService:
                         else:
                             result_create_rider = dao_create_rider(participation_l.rider)
                             if not result_create_rider: 
-                                return False
+                                return DBReport.CREATE_ERROR
                         result_part = dao_create_participation(participation_l)
                         if not result_part:
-                            return False
-                    return True
-            return False
+                            return DBReport.CREATE_ERROR
+                    return DBReport.CREATE_OK
+            return DBReport.CREATE_ERROR
         except Exception as e:
-            return False
+            return DBReport.CREATE_ERROR
 
     def get_all_races(self):
         result = dao_get_all_races()
