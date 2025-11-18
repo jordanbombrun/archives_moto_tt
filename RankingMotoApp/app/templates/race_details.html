@@ -1,13 +1,40 @@
-<h2>Informations du pilote :</h1>
+{% include "nav.html" %}
 
-<ul>
-    <li>Nom : {{ rider.name }}</li>
-    <li>Numéro : {{ rider.number }}</li>
-    <li>Position finale : {{ rider.final_position }}</li>
-</ul>
+<h1>Détails de la course</h1>
 
-<h2>Positions du pilote : </h2>
+{% if race %}
+    <ul>
+        <li>Nom : {{ race.name }}</li>
+        <li>Date : {{ race.date }}</li>
+        <li>Lieu : {{ race.location }}</li>
+        <li>Série : {% if race.serie %}{{ race.serie.name }} ({{ race.serie.year }}){% else %}-{% endif %}</li>
+        <li>Format : {% if race.format %}{{ race.format.name }}{% else %}-{% endif %}</li>
+    </ul>
 
-{% for rpos in rider_positions %}
-    <p>Tour : {{ rpos['tour'] }} , CP : {{ rpos['cp'] }}, Position : {{ rpos['pos'] }}</p>
-{% endfor %}
+    <h2>Participations</h2>
+    {% if participations %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Position finale</th>
+                    <th>Numéro</th>
+                    <th>Nom pilote</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in participations %}
+                    <tr>
+                        <td>{{ p.final_position if p.final_position is not none else '-' }}</td>
+                        <td>{{ p.number if p.number is not none else '-' }}</td>
+                        <td>{{ p.rider.name if p.rider else '-' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune participation trouvée.</p>
+    {% endif %}
+{% else %}
+    <p>Course introuvable.</p>
+{% endif %}
+

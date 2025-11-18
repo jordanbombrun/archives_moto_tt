@@ -28,6 +28,32 @@ def dao_create_race(race_p: Race):
         return DBReport.CREATE_ERROR
     return False
 
+def dao_get_race_by_id(race_id_p: int):
+    try:
+        with DatabaseConnection.get_db_cursor() as cursor:
+            cursor.execute(
+                f"SELECT * FROM {Table.race.name} WHERE id = ?",
+                (race_id_p,)
+            )
+            row = cursor.fetchone()
+            if row:
+                res_serie_l = dao_get_serie_by_id(row[4]) 
+                serie_l = res_serie_l if isinstance(res_serie_l, Serie) else None
+                res_format_l = dao_get_format_by_id(row[5])    
+                format_l = res_format_l if isinstance(res_format_l, Format) else None
+                return Race(
+                    db_id=row[0],
+                    name=row[1],
+                    date=row[2],
+                    location=row[3],
+                    serie=serie_l,
+                    format=format_l
+                )
+        return DBReport.GET_NOT_FOUND
+    except Exception as e:
+        return DBReport.GET_ERROR
+
+
 def dao_get_race_by_name_and_date(name_p: str, date_p):
     try:
         with DatabaseConnection.get_db_cursor() as cursor:
@@ -42,7 +68,7 @@ def dao_get_race_by_name_and_date(name_p: str, date_p):
                 res_format_l = dao_get_format_by_id(row[5])    
                 format_l = res_format_l if isinstance(res_format_l, Format) else None            
                 return Race(
-                    id=row[0],
+                    db_id=row[0],
                     name=row[1],
                     date=row[2],
                     location=row[3],

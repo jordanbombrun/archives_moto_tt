@@ -118,6 +118,13 @@ class RaceService:
             return DBReport.CREATE_ERROR
         except Exception as e:
             return DBReport.CREATE_ERROR
+            
+    def get_race_by_id(self, race_id_p: int):
+        try:
+            result = dao_get_race_by_id(race_id_p)
+            return result
+        except Exception:
+            return DBReport.GET_ERROR
 
     def get_all_races(self):
         result = dao_get_all_races()

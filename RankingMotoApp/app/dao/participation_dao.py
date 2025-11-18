@@ -66,16 +66,17 @@ def dao_get_participations_by_race(race_id: int):
             )
             rows = cursor.fetchall()
             for row in rows:
-                rider = dao_get_rider_by_id(row[2])
+                rider = dao_get_rider_by_id(row[1])
                 if rider not in [DBReport.GET_ERROR, DBReport.GET_NOT_FOUND]:
                     participation = Participation(
                         db_id=row[0],
                         rider=rider,
                         final_position=row[5],
-                        number=row[4],
-                        current_lap=row[6]
+                        number=row[2]
                     )
                     participations.append(participation)
+                else: 
+                    return DBReport.GET_ERROR
         if len(participations) > 0:
             return participations
         return DBReport.GET_NOT_FOUND

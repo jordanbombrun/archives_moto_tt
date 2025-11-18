@@ -2,6 +2,7 @@ from flask import make_response, render_template, request
 from RankingMotoApp.app.services.race_service import RaceService
 from RankingMotoApp.app.utils.DBReport import DBReport
 from datetime import date
+from RankingMotoApp.app.dao.participation_dao import dao_get_participations_by_race
 
 race_service = RaceService()
 
@@ -45,6 +46,27 @@ def render_list_races_for_serie(serie_id: int):
         return render_template('list_race.html', active_page='', races=res_get_races, serie=res_get_serie)
     return make_response('Erreur pendant la récupération des courses pour cette série')
 
+def render_race_details(race_id: int):
+    try:
+        race_id_int = int(race_id)
+    except (ValueError, TypeError):
+        return make_response('Identifiant de course invalide.', 400)
+
+    res_get_race = race_service.get_race_by_id(race_id_int)
+    if res_get_race == DBReport.GET_NOT_FOUND:
+        return make_response('Course non trouvée.', 404)
+    if res_get_race == DBReport.GET_ERROR:
+        return make_response('Erreur pendant la récupération de la course', 500)
+    race_obj = res_get_race 
+
+    participations = dao_get_participations_by_race(race_obj.db_id)
+    if participations == DBReport.GET_ERROR:
+        participations = None
+    elif participations == DBReport.GET_NOT_FOUND:
+        participations = []
+
+    return render_template('race_details.html', race=race_obj, participations=participations)
+
 def race_added():
     name = request.form.get('race_name')
     date = request.form.get('race_date')
@@ -67,7 +89,8 @@ def race_added2():
     categories_ids = ['1','2','3','4','5']; 
     url = '../templates/ALESTREM2025.html'
 
-    if (race_service.add_race2(name, race_date, location, serie_id, format_id, categories_ids, url)):
+    res_add_race = race_service.add_race2(name, race_date, location, serie_id, format_id, categories_ids, url)
+    if res_add_race == DBReport.CREATE_OK:
         return make_response('la course a été ajoutée avec succès !')
     else:
         return make_response('la course n\'a pas pu être ajoutée !')  

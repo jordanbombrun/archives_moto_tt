@@ -56,13 +56,13 @@ class Race_category:
 
 class Race:
     def __init__(self, name: str, 
-                 id: int = None, 
+                 db_id: int = None, 
                  date: date = date(2000, 1, 1), 
                  format: Format = None, 
                  location: str = 'inconnu', 
                  serie: Serie = None, 
                  race_categories: list[Race_category] = None):
-        self.db_id = id
+        self.db_id = db_id
         self.name = name
         self.date = date
         self.format = format if isinstance(format, Format) else None

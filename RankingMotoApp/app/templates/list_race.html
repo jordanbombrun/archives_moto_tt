@@ -11,6 +11,7 @@
             <th>Série</th>
             <th>Format</th>
             <th>Catégories</th>
+            <th>Détails</th>
         </tr>
     </thead>
     <tbody>
@@ -41,6 +42,9 @@
                 {% else %}
                     -
                 {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('render_race_details', race_id=race.db_id) }}">Voir</a>
             </td>
         </tr>
         {% endfor %}
