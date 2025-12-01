@@ -1,10 +1,11 @@
 from flask import make_response, render_template, request
 from RankingMotoApp.app.services.race_service import RaceService
+from RankingMotoApp.app.services.rider_service import RiderService
 from RankingMotoApp.app.utils.DBReport import DBReport
 from datetime import date
-from RankingMotoApp.app.dao.participation_dao import dao_get_participations_by_race
 
 race_service = RaceService()
+rider_service = RiderService()
 
 def render_form_add_race():
     result_get_series = race_service.get_all_series()
@@ -59,13 +60,67 @@ def render_race_details(race_id: int):
         return make_response('Erreur pendant la récupération de la course', 500)
     race_obj = res_get_race 
 
-    participations = dao_get_participations_by_race(race_obj.db_id)
+    # participations = dao_get_participations_by_race(race_obj.db_id)
+    participations = rider_service.get_participations_by_race(race_obj.db_id)
     if participations == DBReport.GET_ERROR:
         participations = None
     elif participations == DBReport.GET_NOT_FOUND:
         participations = []
 
     return render_template('race_details.html', race=race_obj, participations=participations)
+
+def render_rider_details_on_race(race_id: int, rider_id: int):
+    try:
+        race_id_int = int(race_id)
+        if race_id_int <= 0:
+            return make_response('Identifiant de course invalide.', 400)
+    except (ValueError, TypeError):
+        return make_response('Identifiant de course invalide.', 400)
+
+    try:
+        rider_id_int = int(rider_id)
+        if rider_id_int <= 0:
+            return make_response('Identifiant de pilote invalide.', 400)
+    except (ValueError, TypeError):
+        return make_response('Identifiant de pilote invalide.', 400)
+
+    # récupère la course
+    res_get_race = race_service.get_race_by_id(race_id_int)
+    if res_get_race == DBReport.GET_NOT_FOUND:
+        return make_response('Course non trouvée.', 404)
+    if res_get_race == DBReport.GET_ERROR:
+        return make_response('Erreur pendant la récupération de la course', 500)
+    race_obj = res_get_race
+
+    # récupère les participations de la course
+    participations = rider_service.get_participations_by_race(race_obj.db_id)
+    if participations == DBReport.GET_ERROR:
+        return make_response('Erreur pendant la récupération des participations', 500)
+    if participations == DBReport.GET_NOT_FOUND:
+        participations = []
+
+    # recherche la participation correspondant au rider_id fourni
+    selected_participation = None
+    for p in participations:
+        if not p or not getattr(p, 'rider', None):
+            continue
+        rider_obj = p.rider
+        # robust check: db_id or id attribute
+        rider_db_id = getattr(rider_obj, 'db_id', None) or getattr(rider_obj, 'id', None)
+        if rider_db_id == rider_id_int:
+            selected_participation = p
+            break
+
+    if not selected_participation:
+        return make_response('Pilote non trouvé pour cette course.', 404)
+    else:
+        # todo formater données pariticpant
+        return make_response('Pilote non trouvé pour cette course.', 404)
+        
+
+    # render a template showing rider details on the race
+    return render_template('rider_details_on_race.html', race=race_obj, participation=selected_participation)
+# ...existing code...
 
 def race_added():
     name = request.form.get('race_name')
@@ -81,6 +136,7 @@ def race_added():
         return make_response('la course n\'a pas pu être ajoutée !')           
 
 def race_added2():
+    # todo : enlever ces infos en dur
     name = 'race_name'
     race_date = date(2025, 1, 26)
     location = 'race_location'
@@ -88,6 +144,7 @@ def race_added2():
     format_id = 4
     categories_ids = ['1','2','3','4','5']; 
     url = '../templates/ALESTREM2025.html'
+    # /todo
 
     res_add_race = race_service.add_race2(name, race_date, location, serie_id, format_id, categories_ids, url)
     if res_add_race == DBReport.CREATE_OK:

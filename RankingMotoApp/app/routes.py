@@ -12,7 +12,7 @@ app.add_url_rule(rule='/ajouter_course', view_func= render_form_add_race)
 app.add_url_rule(rule='/course_importee', view_func= race_added2, methods=['POST'])
 app.add_url_rule(rule='/lister_courses/serie_id=<int:serie_id>', view_func=render_list_races_for_serie)
 app.add_url_rule(rule='/details_courses/course_id=<int:race_id>', view_func=render_race_details)
-
+app.add_url_rule(rule='/details_courses/course_id=<int:race_id>&rider_id=<int:rider_id>', view_func=render_rider_details_on_race)
 
 # series 
 app.add_url_rule(rule='/lister_championnats', view_func=render_list_all_serie)

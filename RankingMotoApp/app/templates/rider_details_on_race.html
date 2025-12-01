@@ -1,0 +1,17 @@
+{% include "nav.html" %}
+
+{% if race and participation %}
+<h1>Pilote "{{participation.rider.name}}" sur la course "{{ race.name }}"</h1>
+
+    <ul>
+        <li>Nom : {{ race.name }}</li>
+        <li>Date : {{ race.date }}</li>
+        <li>Lieu : {{ race.location }}</li>
+        <li>Série : {% if race.serie %}{{ race.serie.name }} ({{ race.serie.year }}){% else %}-{% endif %}</li>
+        <li>Format : {% if race.format %}{{ race.format.name }}{% else %}-{% endif %}</li>
+    </ul>
+
+{% else %}
+    <p>Course et/ou pilote introuvable.</p>
+{% endif %}
+

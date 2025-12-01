@@ -16,9 +16,10 @@
         <table border="1">
             <thead>
                 <tr>
-                    <th>Position finale</th>
+                    <th>Classement</th>
                     <th>Numéro</th>
                     <th>Nom pilote</th>
+                    <th>Détails</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,6 +28,9 @@
                         <td>{{ p.final_position if p.final_position is not none else '-' }}</td>
                         <td>{{ p.number if p.number is not none else '-' }}</td>
                         <td>{{ p.rider.name if p.rider else '-' }}</td>
+                        <td>
+                            <a href="{{ url_for('render_rider_details_on_race', race_id=race.db_id, rider_id=p.rider.db_id) }}">Voir</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
