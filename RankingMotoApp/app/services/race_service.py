@@ -111,9 +111,8 @@ class RaceService:
                             result_create_rider = dao_create_rider(participation_l.rider)
                             if not result_create_rider: 
                                 return DBReport.CREATE_ERROR
-                        result_part = dao_create_participation(participation_l)
-                        if not result_part:
-                            return DBReport.CREATE_ERROR
+                        if not dao_create_participation(participation_l): return DBReport.CREATE_ERROR
+                        if not dao_create_participation_chronos(participation_l): return DBReport.CREATE_ERROR
                     return DBReport.CREATE_OK
             return DBReport.CREATE_ERROR
         except Exception as e:

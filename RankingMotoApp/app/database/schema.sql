@@ -29,11 +29,10 @@ CREATE TABLE IF NOT EXISTS "chrono" (
 	"id" INTEGER NOT NULL UNIQUE,
 	"participation_id" INTEGER NOT NULL,
 	"current_lap" INTEGER,
-	"current_sp" INTEGER,
-	"current_race" INTEGER,
+	"current_pt" INTEGER, -- spéciale ou CP ou ...
 	"time" REAL NOT NULL DEFAULT 0.0,
 	PRIMARY KEY("id"),
-	FOREIGN KEY ("participation_id") REFERENCES "participation"("race_id")
+	FOREIGN KEY ("participation_id") REFERENCES "participation"("id")
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -42,7 +41,7 @@ CREATE TABLE IF NOT EXISTS "penalty" (
 	"participation_id" INTEGER NOT NULL,
 	"time" REAL NOT NULL,
 	PRIMARY KEY("id"),
-	FOREIGN KEY ("participation_id") REFERENCES "participation"("race_id")
+	FOREIGN KEY ("participation_id") REFERENCES "participation"("id")
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
@@ -56,6 +55,7 @@ CREATE TABLE IF NOT EXISTS "log_import_data" (
 );
 
 CREATE TABLE IF NOT EXISTS "participation" (
+	"id" INTEGER NOT NULL UNIQUE,
 	"race_id" INTEGER NOT NULL,
 	"rider_id" INTEGER NOT NULL,
 	"number" INTEGER NOT NULL,
@@ -63,7 +63,8 @@ CREATE TABLE IF NOT EXISTS "participation" (
 	"team_id" INTEGER,
 	"final_position" INTEGER,
 	"moto" VARCHAR,
-	PRIMARY KEY("race_id", "rider_id"),
+	PRIMARY KEY("id"),
+	UNIQUE("race_id", "rider_id"),
 	FOREIGN KEY ("race_id") REFERENCES "race"("id")
 	ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY ("rider_id") REFERENCES "rider"("id")
@@ -87,7 +88,7 @@ CREATE TABLE IF NOT EXISTS "checkpoint" (
 	"current_cp" INTEGER NOT NULL,
 	"time" TIME NOT NULL DEFAULT '00:00:00',
 	PRIMARY KEY("id"),
-	FOREIGN KEY ("particpation_id") REFERENCES "participation"("race_id")
+	FOREIGN KEY ("particpation_id") REFERENCES "participation"("id")
 	ON UPDATE CASCADE ON DELETE CASCADE
 );
 
