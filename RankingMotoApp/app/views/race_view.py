@@ -113,14 +113,10 @@ def render_rider_details_on_race(race_id: int, rider_id: int):
 
     if not selected_participation:
         return make_response('Pilote non trouvé pour cette course.', 404)
-    else:
-        # todo formater données pariticpant
-        return make_response('Pilote non trouvé pour cette course.', 404)
-        
-
+    
     # render a template showing rider details on the race
     return render_template('rider_details_on_race.html', race=race_obj, participation=selected_participation)
-# ...existing code...
+
 
 def race_added():
     name = request.form.get('race_name')
@@ -137,7 +133,7 @@ def race_added():
 
 def race_added2():
     # todo : enlever ces infos en dur
-    name = 'race_name'
+    name = 'race_name1'
     race_date = date(2025, 1, 26)
     location = 'race_location'
     serie_id = 1

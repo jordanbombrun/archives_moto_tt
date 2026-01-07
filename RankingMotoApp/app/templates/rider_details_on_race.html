@@ -1,15 +1,26 @@
 {% include "nav.html" %}
 
 {% if race and participation %}
-<h1>Pilote "{{participation.rider.name}}" sur la course "{{ race.name }}"</h1>
+<h1>Détails du participant</h1>
 
-    <ul>
-        <li>Nom : {{ race.name }}</li>
-        <li>Date : {{ race.date }}</li>
-        <li>Lieu : {{ race.location }}</li>
-        <li>Série : {% if race.serie %}{{ race.serie.name }} ({{ race.serie.year }}){% else %}-{% endif %}</li>
-        <li>Format : {% if race.format %}{{ race.format.name }}{% else %}-{% endif %}</li>
-    </ul>
+<h2>Informations sur le pilote</h2>
+<ul>
+    <li>Nom : {{ participation.rider.name if participation.rider else '-' }}</li>
+    <li>Numéro : {{ participation.number if participation.number is not none else '-' }}</li>
+    <li>Position finale : {{ participation.final_position if participation.final_position is not none else '-' }}</li>
+    <li>Catégorie : {% if participation.category %}{{ participation.category.name }}{% else %}-{% endif %}</li>
+</ul>
+
+<h2>Informations sur la course</h2>
+<ul>
+    <li>Nom : {{ race.name }}</li>
+    <li>Date : {{ race.date }}</li>
+    <li>Lieu : {{ race.location }}</li>
+    <li>Série : {% if race.serie %}{{ race.serie.name }} ({{ race.serie.year }}){% else %}-{% endif %}</li>
+    <li>Format : {% if race.format %}{{ race.format.name }}{% else %}-{% endif %}</li>
+</ul>
+
+<p><a href="{{ url_for('render_race_details', race_id=race.db_id) }}">← Retour aux détails de la course</a></p>
 
 {% else %}
     <p>Course et/ou pilote introuvable.</p>
