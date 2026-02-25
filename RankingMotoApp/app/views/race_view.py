@@ -1,11 +1,13 @@
 from flask import make_response, render_template, request
 from RankingMotoApp.app.services.race_service import RaceService
+from RankingMotoApp.app.services.racedatas_service import RaceDatasService
 from RankingMotoApp.app.services.rider_service import RiderService
 from RankingMotoApp.app.utils.DBReport import DBReport
 from datetime import date
 
 race_service = RaceService()
 rider_service = RiderService()
+race_datas_service = RaceDatasService()
 
 def render_form_add_race():
     result_get_series = race_service.get_all_series()
@@ -92,30 +94,36 @@ def render_rider_details_on_race(race_id: int, rider_id: int):
         return make_response('Erreur pendant la récupération de la course', 500)
     race_obj = res_get_race
 
-    # récupère les participations de la course
-    participations = rider_service.get_participations_by_race(race_obj.db_id)
-    if participations == DBReport.GET_ERROR:
-        return make_response('Erreur pendant la récupération des participations', 500)
-    if participations == DBReport.GET_NOT_FOUND:
-        participations = []
+    selected_participation = rider_service.get_participation_by_race_and_rider(race_obj, rider_id_int)
 
-    # recherche la participation correspondant au rider_id fourni
-    selected_participation = None
-    for p in participations:
-        if not p or not getattr(p, 'rider', None):
-            continue
-        rider_obj = p.rider
-        # robust check: db_id or id attribute
-        rider_db_id = getattr(rider_obj, 'db_id', None) or getattr(rider_obj, 'id', None)
-        if rider_db_id == rider_id_int:
-            selected_participation = p
-            break
-
-    if not selected_participation:
+    if selected_participation == DBReport.GET_ERROR:
+        return make_response('Erreur pendant la récupération de la participation', 500)
+    if selected_participation == DBReport.GET_NOT_FOUND:
         return make_response('Pilote non trouvé pour cette course.', 404)
     
+    # récupération chronos du participant
+    chronos = race_datas_service.get_chronos_by_participation(selected_participation.db_id)
+    if chronos == DBReport.GET_ERROR:
+        return make_response('Erreur pendant la récupération des chronos', 500)
+    if chronos == DBReport.GET_NOT_FOUND:
+        chronos = []
+    
+    # Conversion des temps de minutes vers format heure (HH:MM:SS)
+    for chrono in chronos:
+        if chrono.get('time') is not None:
+            time_minutes = chrono['time']
+            # Conversion en heures, minutes, secondes
+            total_minutes = int(time_minutes)
+            heures = total_minutes // 60
+            minutes_restantes = total_minutes % 60
+            secondes = int((time_minutes - total_minutes) * 60)
+            # Formatage en HH:MM:SS
+            chrono['time_formatted'] = f"{heures:02d}:{minutes_restantes:02d}:{secondes:02d}"
+        else:
+            chrono['time_formatted'] = '-'
+        
     # render a template showing rider details on the race
-    return render_template('rider_details_on_race.html', race=race_obj, participation=selected_participation)
+    return render_template('rider_details_on_race.html', race=race_obj, participation=selected_participation, chronos=chronos)
 
 
 def race_added():

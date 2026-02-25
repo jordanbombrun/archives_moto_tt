@@ -1,5 +1,10 @@
-from RankingMotoApp.app.dao.participation_dao import dao_get_participations_by_race
-from RankingMotoApp.app.utils import DBReport
+from RankingMotoApp.app.dao.participation_dao import (
+    dao_get_participations_by_race,
+    dao_get_participation_by_race_rider,
+)
+from RankingMotoApp.app.models.race import Race
+from RankingMotoApp.app.models.rider import Rider
+from RankingMotoApp.app.utils.DBReport import DBReport
 
 
 class RiderService:
@@ -10,5 +15,12 @@ class RiderService:
         except Exception:
             return DBReport.GET_ERROR
 
-    # def get_participation_(self, participation_id: int):
-        # 
+    def get_participation_by_race_and_rider(self, race: Race, rider_id: int):
+        try:
+            rider = Rider(db_id=rider_id)
+            result = dao_get_participation_by_race_rider(race, rider)
+            return result
+        except Exception:
+            return DBReport.GET_ERROR
+
+

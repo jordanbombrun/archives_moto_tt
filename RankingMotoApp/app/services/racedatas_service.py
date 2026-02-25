@@ -5,6 +5,8 @@ import requests
 from RankingMotoApp.app.models.race import Race
 from RankingMotoApp.app.models.rider import Rider
 from RankingMotoApp.app.models.participation import Participation
+from RankingMotoApp.app.models.participation import Participation
+from RankingMotoApp.app.dao.participation_dao import *
 
 
 class RaceDatasService:
@@ -134,39 +136,8 @@ class RaceDatasService:
                     current_position_L +=1
         return current_position_L
 
-        
-    #############
-    # Main code
-    #############
-    # def process(rider_number_P, url_P):
-    #     if (int(rider_number_P) > 0):
-    #         parse_datas(url_P, race)
-    #         rider_P = race.get_rider_by_number(rider_number_P)
-    #         if (rider_P is not None):
-    #             # ajout de tous les chronos de tous les tours pour 1 pilote
-    #             for lap_L in range(race.nb_laps):    
-    #                 for cp_L in range(race.nb_CP) :
-    #                     rider_P.positions_lap_CP[lap_L].append(get_current_rank(lap_L+1, cp_L+1, rider_P))
-    #             # rider_P.print_positions_cli()
-    #         else:
-    #             print("Aucun pilote trouvé pour le numéro " + rider_number_P)
-    #     else:
-    #         print('Argument du script non valide : ' + rider_number_P + ' doit être > 0')
-    #     return rider_P
-
-    # parse_datas('http://motott.fr/live/HARD_GENTOR_2025/MANCHE1_PASSAGES_CH.html', race)
-    # rider_P = race.get_rider_by_number('12')
-
-    # if (rider_P is not None):
-    #     # ajout de tous les chronos de tous les tours pour 1 pilote
-    #     for lap_L in range(race.nb_lap):    
-    #         for cp_L in range(race.nb_cp) :
-    #             rider_P.positions_lap_CP[lap_L].append(get_current_rank(lap_L+1, cp_L+1, rider_P))
-    #     rider_P.print_positions_cli()
-    # else:
-    #     print("Aucun pilote trouvé pour ce numéro")
-
-
+    def get_chronos_by_participation(self, participation_id_p :int):
+        return dao_get_chronos_by_participation(participation_id_p)
 
 
 

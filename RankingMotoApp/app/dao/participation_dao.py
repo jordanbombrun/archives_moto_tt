@@ -37,22 +37,26 @@ def dao_get_participation_by_race_rider(race_p: Race, rider_p: Rider):
         with DatabaseConnection.get_db_cursor() as cursor:
             cursor.execute(
                 f"""SELECT * FROM {Table.participation.name} 
-                WHERE race_id = ? AND rider_id = ?""",  
+                WHERE race_id = ? AND rider_id = ?""",
                 (race_p.db_id, rider_p.db_id)
             )
             row = cursor.fetchone()
             if row:
-                # res_cat = dao_get_category_by_id(row[4])  # category_id est maintenant à l'index 4
-                # category_l = res_cat if isinstance(res_cat, Category) else None
+                # récupération du rider complet à partir de l'id stocké en base
+                rider = dao_get_rider_by_id(row[2])
+                if rider in (DBReport.GET_ERROR, DBReport.GET_NOT_FOUND):
+                    return DBReport.GET_ERROR
+
                 participation = Participation(
-                    db_id=row[0],  # id
-                    rider=rider_p,
-                    final_position=row[6],  # final_position est maintenant à l'index 6 (après id, race_id, rider_id, number, category_id, team_id)
+                    db_id=row[0],   # id
+                    rider=rider,
+                    number=row[3],  # number est à l'index 3
+                    final_position=row[6],  # final_position est à l'index 6
                     race=race_p
                 )
                 return participation
         return DBReport.GET_NOT_FOUND
-    except Exception as e:
+    except Exception:
         return DBReport.GET_ERROR
 
 def dao_get_participations_by_race(race_id: int):
@@ -156,16 +160,16 @@ def dao_get_chrono_by_id(chrono_id: int):
     except Exception:
         return DBReport.GET_ERROR
 
-def dao_get_chronos_by_participation(participation: Participation):
+def dao_get_chronos_by_participation(participation_db_id: int):
     chronos = []
     try:
-        if not participation or not participation.db_id:
+        if participation_db_id <= 0 :
             return DBReport.GET_ERROR
         with DatabaseConnection.get_db_cursor() as cursor:
             cursor.execute(
                 f"""SELECT * FROM {Table.chrono.name} 
                 WHERE participation_id = ?""",
-                (participation.db_id,)
+                (participation_db_id,)
             )
             rows = cursor.fetchall()
             for row in rows:
