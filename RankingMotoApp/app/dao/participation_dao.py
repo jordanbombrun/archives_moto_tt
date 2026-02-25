@@ -115,18 +115,35 @@ def dao_create_participation_chronos(participation: Participation):
     try:
         if not participation or not hasattr(participation, "chronos_lap_CP"):
             return DBReport.CREATE_ERROR
+        # nombre de CP attendus pour la course (si disponible)
+        nb_cp = getattr(participation.race, "nb_CP", None) if getattr(participation, "race", None) else None
+
         for lap_index, chrono_list in enumerate(participation.chronos_lap_CP):
             current_lap = lap_index + 1  # 1-based lap
-            for pt_index, chrono in enumerate(chrono_list):
+
+            # si on connaît le nombre de CP, on persiste aussi les cases vides
+            if isinstance(nb_cp, int) and nb_cp > 0:
+                max_pts = nb_cp
+                indices = range(max_pts)
+            else:
+                # repli sur l'ancien comportement : uniquement les chronos présents
+                max_pts = len(chrono_list)
+                indices = range(max_pts)
+
+            for pt_index in indices:
                 current_pt = pt_index + 1  # 1-based pt (point spécial, CP, etc.)
+
+                chrono = chrono_list[pt_index] if pt_index < len(chrono_list) else None
+
                 # Convertir le time object en float (minutes)
                 if isinstance(chrono, float):
                     time_value = chrono
                 elif hasattr(chrono, "hour") and hasattr(chrono, "minute"):
                     time_value = chrono.hour * 60 + chrono.minute + (chrono.second / 60.0 if hasattr(chrono, "second") else 0.0)
                 else:
+                    # case sans chrono : on stocke 0.0 en base
                     time_value = 0.0
-                
+
                 result = dao_create_chrono(
                     participation=participation,
                     current_lap=current_lap,
@@ -173,12 +190,16 @@ def dao_get_chronos_by_participation(participation_db_id: int):
             )
             rows = cursor.fetchall()
             for row in rows:
+                raw_time = row[4]
+                # en base, 0.0 représente un chrono vide/non renseigné
+                time_value = None if raw_time == 0.0 else raw_time
+
                 chronos.append({
                     'id': row[0],
                     'participation_id': row[1],
                     'current_lap': row[2],
                     'current_pt': row[3],
-                    'time': row[4]
+                    'time': time_value
                 })
         if len(chronos) > 0:
             return chronos

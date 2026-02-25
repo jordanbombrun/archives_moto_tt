@@ -69,6 +69,7 @@ class RaceDatasService:
                             current_participation.rider = rider
                             current_participation.final_position = final_pos
                             current_participation.number = number
+                            current_participation.current_lap = current_lap
 
                             nb_laps = int(race.nb_laps) if getattr(race, "nb_laps", None) else 0
                             current_participation.chronos_lap_CP = [[] for _ in range(nb_laps)]
@@ -83,10 +84,14 @@ class RaceDatasService:
                                 except Exception:
                                     pass
 
-                        # ajout des chronos/positions pour la participation courante
-                        for j, chrono_CP in enumerate(td_values):
-                            if (j > 3) and current_participation is not None:
-                                current_participation.add_chrono(chrono_CP)
+                        # ajout des chronos (y compris cases vides) pour la participation courante
+                        if current_participation is not None:
+                            lap_idx = max(0, int(getattr(current_participation, "current_lap", 0)) - 1)
+                            current_participation._ensure_lap_lists(lap_idx)
+                            for j, chrono_CP in enumerate(td_values):
+                                if j > 3:
+                                    chrono = current_participation.convert_time(chrono_CP)
+                                    current_participation.chronos_lap_CP[lap_idx].append(chrono)
 
                         old_number = str(current_participation.number) if (current_participation and current_participation.number is not None) else old_number
 
