@@ -3,14 +3,6 @@
 {% if race and participation %}
 <h1>Détails du participant</h1>
 
-<h2>Informations sur le pilote</h2>
-<ul>
-    <li>Nom : {{ participation.rider.name if participation.rider else '-' }}</li>
-    <li>Numéro : {{ participation.number if participation.number is not none else '-' }}</li>
-    <li>Position finale : {{ participation.final_position if participation.final_position is not none else '-' }}</li>
-    <li>Catégorie : {% if participation.category %}{{ participation.category.name }}{% else %}-{% endif %}</li>
-</ul>
-
 <h2>Informations sur la course</h2>
 <ul>
     <li>Nom : {{ race.name }}</li>
@@ -21,6 +13,38 @@
 </ul>
 
 <p><a href="{{ url_for('render_race_details', race_id=race.db_id) }}">← Retour aux détails de la course</a></p>
+
+<h2>Informations sur le pilote</h2>
+<ul>
+    <li>Nom : {{ participation.rider.name if participation.rider else '-' }}</li>
+    <li>Numéro : {{ participation.number if participation.number is not none else '-' }}</li>
+    <li>Position finale : {{ participation.final_position if participation.final_position is not none else '-' }}</li>
+    <li>Catégorie : {% if participation.category %}{{ participation.category.name }}{% else %}-{% endif %}</li>
+</ul>
+
+<h2>Chronos</h2>
+{% if chronos and chronos|length > 0 %}
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Tour</th>
+                <th>Point de contrôle</th>
+                <th>Temps</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for chrono in chronos %}
+                <tr>
+                    <td>{{ chrono.current_lap if chrono.current_lap is not none else '-' }}</td>
+                    <td>{{ chrono.current_pt if chrono.current_pt is not none else '-' }}</td>
+                    <td>{{ chrono.time_formatted }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucun chrono enregistré pour ce participant.</p>
+{% endif %}
 
 {% else %}
     <p>Course et/ou pilote introuvable.</p>
